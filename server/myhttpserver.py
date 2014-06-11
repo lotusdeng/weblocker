@@ -5,6 +5,7 @@ import sys
 import hashlib
 import ConfigParser
 import httplib
+import time
 from multiprocessing import current_process
 
 
@@ -47,14 +48,15 @@ class CaseInfo:
 class MyHTTPHandle(BaseHTTPRequestHandler):
     def do_POST(self):
         print '<<<<<<<<<<<<<<<<<<----------------------------------'
-        print 'handle post start'
+        print time.strftime("%Y-%m-%d %H:%M:%S")
+        print "POST " + self.path
         print self.headers
 
         parsedURI = urlparse(self.path)
         paras = parse_qs(parsedURI.query)
         print paras
         uriPath = parsedURI.path
-        print uriPath
+
         try:
             if(uriPath == '/capturedUrl/add'):
                 self.handlePostCapturedUrl()
@@ -64,6 +66,8 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
                 self.handlePostSetCaseInfo()
             elif(uriPath == "/generateReport"):
                 self.handlePostGenerateReport()
+            else:
+                self.sendHttpFail("unknown uri:" + uriPath)
             
         except Exception, e:
             print e
@@ -72,11 +76,12 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         print '\n'
     def do_GET(self): 
         print '<<<<<<<<<<<<<<<<<<----------------------------------'
-        print 'handle get start'
+        print time.strftime("%Y-%m-%d %H:%M:%S")
+        print "GET " + self.path
         print self.headers
         parsedURI = urlparse(self.path)
         uriPath = parsedURI.path
-        print uriPath
+        
         try:
             if(uriPath == '/capturedUrl/list'):
                 self.handleGetFileList()
@@ -89,6 +94,8 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
                 pass
             elif(uriPath =="/quit"):
                 self.handleGetQuit()
+            else:
+                self.sendHttpFail("unknown uri:" + uriPath)
         except SystemExit:
             exit(0)
         except Exception, e:
