@@ -25,7 +25,12 @@ try {
     chrome.tabs.onUpdated.addListener(function(tabId , info) {
         //alert("chrome.tabs.onUpdated event happen");
         chrome.tabs.get(tabId, function(tab){
-            //alert("info.status=" + info.status);
+            //alert("info.status=" + info.status+", tab.url="+tab.url);
+            
+            if(tab.url.indexOf("chrome") == 0) {
+                //alert("chrome page");
+                return;
+            }
             if (info.status == "complete") {
                 //alert("start willCaptureThisUrl");
                 willCaptureThisUrl(tab.url, function(captureIt){
@@ -34,16 +39,16 @@ try {
                         doCaptureThisUrl(tab);
                     }
                 });
+            } else if(info.status == "loading") {
+                currentUrlUUID = generateUUID();
+               	tabUUIDs[tab.id] = currentUrlUUID;
+                willCaptureThisUrl(tab.url, function(captureIt) {
+                    if(captureIt) {
+                    	tryCaptureThisUrl(tab);
+                    }
+                });
             } else {
-               if(tab.url != "chrome://newtab/") {
-               	    currentUrlUUID = generateUUID();
-               	    tabUUIDs[tab.id] = currentUrlUUID;
-                    willCaptureThisUrl(tab.url, function(captureIt) {
-                    	if(captureIt) {
-                    		tryCaptureThisUrl(tab);
-                    	}
-                    });
-               }
+               	
             }
         });
     });
