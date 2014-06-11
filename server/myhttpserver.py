@@ -204,6 +204,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         print data
         self.end_headers()
         self.wfile.write(data)
+        self.wfile.write("\r\n")
         
     def handlePostGenerateReport(self):
         with open(os.path.join(self.server.case.myDir, 'report.txt'), 'a') as fd:
@@ -225,6 +226,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
+        self.wfile.write("\r\n")
         pass
     def handleGetStatus(self):
         self.send_response(200)
@@ -233,6 +235,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
+        self.wfile.write("\r\n")
         pass
     def sendHttpOk(self):
         self.send_response(200)
@@ -241,6 +244,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
+        self.wfile.write("\r\n")
         
     def sendHttpFail(self, error):
         self.send_response(500)
@@ -249,6 +253,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
+        self.wfile.write("\r\n")
         
     def appendCapturedUrlRecord(self, uuid, url, localMHTMLFilePath, md5, sha256):
         if not os.path.isdir(self.server.case.myDir):
