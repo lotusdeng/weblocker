@@ -98,8 +98,8 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         print '\n'
         
     def handlePostCapturedUrl(self):
-        self.currentUse += 1
-        if(self.currentUse > self.maxUse):
+        self.server.currentUse += 1
+        if(self.server.currentUse > self.server.maxUse):
             print "this is trial version, only use 30 times"
             self.sendHttpFail("this is trial version, only use 30 times")
             pass
@@ -146,7 +146,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         if(sha256 == "enable"):
             sha256Str = calcSHA256(data)
         
-        appendCapturedUrlRecord(uuid, url, os.path.join("./", fileDirName, fileName), md5Str, sha256Str)
+        self.appendCapturedUrlRecord(uuid, url, os.path.join("./", fileDirName, fileName), md5Str, sha256Str)
         
         self.sendHttpOk()
         
@@ -158,7 +158,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         url = paras['url'][0]
         uuid = paras['uuid'][0]
         
-        appendTryCaptureUrlRecord(uuid, url)
+        self.appendTryCaptureUrlRecord(uuid, url)
         self.sendHttpOk()
         
     def handleGetQuit(self):
@@ -245,13 +245,13 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         
     def appendCapturedUrlRecord(self, uuid, url, localMHTMLFilePath, md5, sha256):
         if not os.path.isdir(self.server.case.myDir):
-            os.mkdir(self.server.case.myDir)
+            os.makedirs(self.server.case.myDir)
         with open(os.path.join(self.server.case.myDir, 'capturedUrls.txt'), 'a') as fd:
             fd.write(uuid + '\t' + url + '\t' + localMHTMLFilePath + '\t' + md5 + '\t' + sha256 + '\n')
 
     def appendTryCaptureUrlRecord(self, uuid, url):
         if not os.path.isdir(self.server.case.myDir):
-            os.mkdir(self.server.case.myDir)
+            os.makedirs(self.server.case.myDir)
         with open(os.path.join(self.server.case.myDir, 'tryCaptureUrls.txt'), 'a') as fd:
             fd.write(uuid + '\t' + url + '\n')
 
