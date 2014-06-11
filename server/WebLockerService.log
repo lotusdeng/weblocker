@@ -1,0 +1,34 @@
+2014-06-11 15:45:28,716 WebLockerService INFO     WebLockerService.__init__ enter
+2014-06-11 15:45:28,716 WebLockerService INFO     pid:7588|name:MainProcess
+2014-06-11 15:45:28,721 WebLockerService INFO     WebLockerService.__init__ leave
+2014-06-11 15:45:28,721 WebLockerService INFO     WebLockerService::SvcDoRun enter
+2014-06-11 15:45:28,721 WebLockerService INFO     WebLockerService::SvcDoRun WaitForSingleObject for stop
+2014-06-11 15:45:28,721 WebLockerService INFO     HttpServer server_forever start
+2014-06-11 15:45:28,723 WebLockerService INFO     pid:7588|name:MainProcess
+2014-06-11 15:45:28,723 WebLockerService INFO     HTTPServer::handle_request
+2014-06-11 15:46:19,990 WebLockerService INFO     WebLockerService::SvcStop enter
+2014-06-11 15:46:19,990 WebLockerService INFO     HttpServer stop start
+2014-06-11 15:46:19,992 WebLockerService INFO     <<<<<<<<<<<<<<<<<<----------------------------------
+2014-06-11 15:46:19,992 WebLockerService INFO     handle get start
+2014-06-11 15:46:19,992 WebLockerService INFO     Host: 127.0.0.1:8080
+2014-06-11 15:46:19,992 WebLockerService INFO     Accept-Encoding: identity
+2014-06-11 15:46:19,992 WebLockerService INFO     /quit
+2014-06-11 15:46:19,992 WebLockerService INFO     127.0.0.1 - - [11/Jun/2014 15:46:19] "GET /quit HTTP/1.1" 200 -
+2014-06-11 15:46:19,993 WebLockerService INFO     >>>>>>>>>>>>>>>>>>>----------------------------------
+2014-06-11 15:46:19,993 WebLockerService INFO     ----------------------------------------
+2014-06-11 15:46:19,993 WebLockerService INFO     Exception happened during processing of request from
+2014-06-11 15:46:19,994 WebLockerService INFO     ('127.0.0.1', 64004)
+2014-06-11 15:46:19,994 WebLockerService INFO     Traceback (most recent call last):
+2014-06-11 15:46:19,996 WebLockerService INFO       File "C:\Python27\lib\SocketServer.py", line 295, in _handle_request_noblock
+2014-06-11 15:46:19,996 WebLockerService INFO         self.process_request(request, client_address)
+2014-06-11 15:46:19,996 WebLockerService INFO       File "C:\Python27\lib\SocketServer.py", line 321, in process_request
+2014-06-11 15:46:19,996 WebLockerService INFO         self.finish_request(request, client_address)
+2014-06-11 15:46:19,997 WebLockerService INFO       File "C:\Python27\lib\SocketServer.py", line 334, in finish_request
+2014-06-11 15:46:19,997 WebLockerService INFO     HttpServer stop exit
+2014-06-11 15:46:19,997 WebLockerService INFO         self.RequestHandlerClass(request, client_address, self)
+2014-06-11 15:46:19,997 WebLockerService INFO     WebLockerService::SvcStop SetEvent for stop
+2014-06-11 15:46:19,999 WebLockerService INFO       File "E:\weblocker\trunk\server\myhttpserver.py", line 50, in __init__
+2014-06-11 15:46:19,999 WebLockerService INFO     WebLockerService::SvcStop leave
+2014-06-11 15:46:19,999 WebLockerService INFO     WebLockerService::SvcDoRun leave
+2014-06-11 15:46:20,000 WebLockerService INFO         self.case.load()
+2014-06-11 15:46:20,000 WebLockerService INFO       File "E:\weblocker\trunk\server\myhttpserver.py", line 30, in load

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Weblocker Option Page</title>
+<link href="css/main.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/option.js"></script>
+<script>
+	//控制白色区域在不同的显示器里都垂直居中
+$(document).ready(function(){
+			var windowheight=$(window).height();
+			var img_height=$(".page").height();
+			var _scrollHeight = $(document).scrollTop();
+			var tcktop=(windowheight-img_height)/2+ _scrollHeight+"px";
+			$(".page").css({top:tcktop});
+	})
+</script>
+</head>
+
+<body>
+	<div class="page">
+    	<div class="page_top"><span>Weblocker选项</span></div>
+    	<div class="page_main">
+        
+
+        
+        	<ul class="printscreen">
+            	<li><span>案件名</span><input id="caseNameText" name="" type="text" /></li>
+                <li><span>调查员</span><input id="caseInvestigatorText" name="" type="text" /></li>
+                <li><span>固定URL</span><input id="caseUrlText" name="" type="text" /></li>
+                <li><span>保存路径</span><input id="caseLocationText" name="" type="text" /></li>
+                <hr />
+                <li><input id="md5Checkbox" name="" type="checkbox" value="" /><span>MD5</span></li>
+                <li><input id="sha256Checkbox" name="" type="checkbox" value="" /><span>SHA256</span></li>
+                <li><input id="capturePicCheckbox" name="" type="checkbox" value="" /><span>截图</span></li>
+				<hr />
+            </ul>
+
+        	<input id="saveButton" class="save_btn" name="" type="button" value="保存并关闭" />
+        
+        </div>
+    </div> 
+</body>
+</html>
