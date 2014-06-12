@@ -219,7 +219,9 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
     def handlePostGenerateReport(self):
         with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'report.txt'), 'a') as fd:
             fd.write("to do")
-        os.system("python report.py")
+        import report
+        report = report.Report()
+        report.run()
         self.sendHttpOk()    
     
     def handleGetFileList(self):

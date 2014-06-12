@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*- 
 from reportlab.lib.pagesizes import letter
+from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen import canvas
 from ConfigParser import ConfigParser
 from reportlab.lib.pagesizes import letter
@@ -7,12 +8,17 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle, TA_CENTER
 from reportlab.lib.units import inch, mm
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph, Table, SimpleDocTemplate, Spacer
+from reportlab.pdfbase.ttfonts import TTFont
+
+pdfmetrics.registerFont(TTFont('msyh', 'msyh.ttf'))
 import os
 import sys
 
-sysEncode = sys.getfilesystemencoding()
+reload(sys)    
+sys.setdefaultencoding('utf-8')   #修改默认编码方式，默认为ascci  
+
 ########################################################################
-class Test(object):
+class Report(object):
     """"""
  
     #----------------------------------------------------------------------
@@ -52,10 +58,11 @@ class Test(object):
     def _getCaptureUrls(self):
         captureUrlsFile = os.path.join(self.caseLocation, self.caseName, "capturedUrls.txt")
         captureUrls = {}
-        with open(captureUrlsFile.decode('UTF-8').encode(sysEncode), 'r') as fd:
+        with open(captureUrlsFile.decode('UTF-8'), 'r') as fd:
             lines = fd.readlines()
             #fd.write(uuid + '\t' + url + '\t' + localMHTMLFilePath + '\t' + md5 + '\t' + sha256 + '\n')
             for i in lines:
+                print i
                 words = i.split('\t')
                 if len(words) == 5:
                     uuid = words[0]
@@ -63,19 +70,21 @@ class Test(object):
                     localFile  = words[2]
                     md5 = words[3]
                     sha256 = words[4]
+                    print uuid, url, localFile, md5, sha256
                     
+                    tmp = os.path.splitext(localFile)
+                    print 'filetype:' + tmp[1]
                     if uuid in captureUrls:
                         value = captureUrls[uuid]
-                        if tmp[1] == "mhtml":
+                        if tmp[1] == ".mhtml":
                             value['mhtml'] = localFile
                         else:
                             value['png'] = localFile
                         captureUrls[uuid] = value
                     else:
-                        tmp = os.path.splitext(localFile)
                         value = {}
                         value['url'] = url
-                        if tmp[1] == "mhtml":
+                        if tmp[1] == ".mhtml":
                             value['mhtml'] = localFile
                         else:
                             value['png'] = localFile
@@ -89,12 +98,13 @@ class Test(object):
         """
 		
         self.c = canvas
+        self.c.setFont('msyh', 8)  
         normal = self.styles["Normal"]
         
         
         
         #title
-        header_text = "<font size=14><b>{0}</b></font>".format(self.caseName)
+        header_text = "<font name='msyh' size=14><b>{0}</b></font>".format(self.caseName)
         p = Paragraph(header_text, normal)
         p.wrapOn(self.c, self.width, self.height)
         p.drawOn(self.c, self.width / 2 - len(self.caseName) * 8 / 2, self.height - 16)
@@ -112,9 +122,9 @@ class Test(object):
         #self.c.line(150, self.height - 64, 580, self.height - 64)
         self.c.drawString(150, self.height - 64, self.caseUrl)
         
-        tryCaptureUrlsFile = os.path.join(self.caselocation, self.caseName, "tryCaptureUrls.txt")
+        tryCaptureUrlsFile = os.path.join(self.caseLocation, self.caseName, "tryCaptureUrls.txt")
         tryCaptureUrls = {}
-        with open(tryCaptureUrlsFile.decode('UTF-8').encode(sysEncode), "r") as fd:
+        with open(tryCaptureUrlsFile.decode('UTF-8'), "r") as fd:
             lines = fd.readlines()
             #fd.write(uuid + '\t' + url + '\n')
             for i in lines:
@@ -181,5 +191,5 @@ class Test(object):
  
 #----------------------------------------------------------------------
 if __name__ == "__main__":
-    t = Test()
+    t = Report()
     t.run()
