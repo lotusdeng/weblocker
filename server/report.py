@@ -8,7 +8,9 @@ from reportlab.lib.units import inch, mm
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph, Table, SimpleDocTemplate, Spacer
 import os
+import sys
 
+sysEncode = sys.getfilesystemencoding()
 ########################################################################
 class Test(object):
     """"""
@@ -18,6 +20,13 @@ class Test(object):
         """Constructor"""
         self.width, self.height = letter
         self.styles = getSampleStyleSheet()
+        
+        cf = ConfigParser()
+        cf.read('case.ini')
+        self.caseLocation = cf.get('case', 'caseLocation')
+        self.caseName = cf.get('case', 'caseName')
+        self.caseUrl = cf.get('case', 'caseUrl')
+        self.caseInvestigator = cf.get('case', 'caseInvestigator')
  
     #----------------------------------------------------------------------
     def coord(self, x, y, unit=1):
@@ -41,9 +50,9 @@ class Test(object):
         self.doc.build(self.story, onFirstPage=self.createDocument)
         print "finished!"
     def _getCaptureUrls(self):
-        captureUrlsFile = os.path.join(caseLocation, caseName)
+        captureUrlsFile = os.path.join(self.caseLocation, self.caseName, "capturedUrls.txt")
         captureUrls = {}
-        with open(captureUrlsFile, 'r') as fd:
+        with open(captureUrlsFile.decode('UTF-8').encode(sysEncode), 'r') as fd:
             lines = fd.readlines()
             #fd.write(uuid + '\t' + url + '\t' + localMHTMLFilePath + '\t' + md5 + '\t' + sha256 + '\n')
             for i in lines:
@@ -81,19 +90,14 @@ class Test(object):
 		
         self.c = canvas
         normal = self.styles["Normal"]
-        cf = ConfigParser()
-        cf.read('case.ini')
-        caseLocation = cf.get('case', 'caseLocation')
-        caseName = cf.get('case', 'caseName')
-        caseUrl = cf.get('case', 'caseUrl')
-        caseInvestigator = cf.get('case', 'caseInvestigator')
-        caseLocation = cf.get('case', 'caselocation')
+        
+        
         
         #title
-        header_text = "<font size=14><b>{0}</b></font>".format(caseName)
+        header_text = "<font size=14><b>{0}</b></font>".format(self.caseName)
         p = Paragraph(header_text, normal)
         p.wrapOn(self.c, self.width, self.height)
-        p.drawOn(self.c, self.width / 2 - len(caseName) * 8 / 2, self.height - 16)
+        p.drawOn(self.c, self.width / 2 - len(self.caseName) * 8 / 2, self.height - 16)
         
         p = Paragraph("<b>Case Info</b>", normal)
         p.wrapOn(self.c, self.width, self.height)
@@ -102,15 +106,15 @@ class Test(object):
         
         self.c.drawString(30, self.height - 48, 'Investigator:')
         #self.c.line(150, self.height - 48, 580, self.height - 48)
-        self.c.drawString(150,self.height - 48, caseInvestigator)
+        self.c.drawString(150,self.height - 48, self.caseInvestigator)
 		
         self.c.drawString(30, self.height - 64,'URL:')
         #self.c.line(150, self.height - 64, 580, self.height - 64)
-        self.c.drawString(150, self.height - 64, caseUrl)
+        self.c.drawString(150, self.height - 64, self.caseUrl)
         
-        tryCaptureUrlsFile = os.path.join(caselocation, caseName)
+        tryCaptureUrlsFile = os.path.join(self.caselocation, self.caseName, "tryCaptureUrls.txt")
         tryCaptureUrls = {}
-        with open(tryCaptureUrlsFile, "r") as fd:
+        with open(tryCaptureUrlsFile.decode('UTF-8').encode(sysEncode), "r") as fd:
             lines = fd.readlines()
             #fd.write(uuid + '\t' + url + '\n')
             for i in lines:
@@ -122,15 +126,15 @@ class Test(object):
         captureUrls = self._getCaptureUrls()
         self.c.drawString(30, self.height - 80, 'CapturedUrl total:')
         #self.c.line(150, self.height - 80, 580, self.height - 80)
-        self.c.drawString(150, self.height - 80, str(len(tryCaptureUrls))
-		
+        self.c.drawString(150, self.height - 80, str(len(tryCaptureUrls)))
+        
         self.c.drawString(30, self.height - 96, 'CapturedUrl success:')
         #self.c.line(150, self.height - 96, 580, self.height - 96)
         self.c.drawString(150, self.height - 96, str(len(captureUrls)))
  
         self.c.drawString(30, self.height - 112, 'CapturedUrl fail:')
         #self.c.line(150, self.height - 112,580, self.height - 112)
-        self.c.drawString(150, self.height - 112, str(len(tryCaptureUrls) - len(captureUrls))
+        self.c.drawString(150, self.height - 112, str(len(tryCaptureUrls) - len(captureUrls)))
         
         p = Paragraph("<b>Captured Success URL</b>", self.styles["Normal"])
         p.wrapOn(self.c, self.width, self.height)
