@@ -161,7 +161,7 @@ function sendFileToBackServer(query, blob) {
             } else {
             }
 
-        }).fail(function(jqXHR, textStatus) {
+        }).fail(function(jqXHR, textStatus, errorThrown) {
             alert("GET http://127.0.0.1:8080/capturedUrl/add fail, reason:" + 
             ' (errorThrow:' + errorThrown + "|textStatus:" + textStatus + ")"
             + ", please restart WebLockerService");
@@ -292,7 +292,7 @@ function tryCaptureThisUrl(tab) {
                 } else {
                 }
     
-        }).fail(function(jqXHR, textStatus) {
+        }).fail(function(jqXHR, textStatus, errorThrown) {
             alert("GET http://127.0.0.1:8080/tryCaptureUrl/add fail, reason:" + 
                 ' (errorThrow:' + errorThrown + "|textStatus:" + textStatus + ")"
                 + ", please restart WebLockerService");
@@ -336,7 +336,7 @@ function sendCaseInfoToBackServer(caseInfo) {
                 } else {
                 }
     
-        }).fail(function(jqXHR, textStatus) {
+        }).fail(function(jqXHR, textStatus, errorThrown) {
             alert("GET http://127.0.0.1:8080/setCaseInfo fail, reason:" + 
             ' (errorThrow:' + errorThrown + "|textStatus:" + textStatus + ")"
             + ", please restart WebLockerService");
@@ -363,7 +363,7 @@ function sendGenerateReportToBackServer() {
                 } else {
                 }
     
-        }).fail(function(jqXHR, textStatus) {
+        }).fail(function(jqXHR, textStatus, errorThrown) {
             alert("GET http://127.0.0.1:8080/generateReport fail, reason:" + 
             ' (errorThrow:' + errorThrown + "|textStatus:" + textStatus + ")"
             + ", please restart WebLockerService");

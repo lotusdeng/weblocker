@@ -91,7 +91,7 @@ function initCaseInfo() {
                 caseLocationText.value = msg.caseLocation;
                 
             }
-        }).fail(function(jqXHR, textStatus) {
+        }).fail(function(jqXHR, textStatus, errorThrown) {
             alert("GET http://127.0.0.1:8080/caseInfo fail, reason:" + 
             ' (errorThrow:' + errorThrown + "|textStatus:" + textStatus + ")"
             + ", please restart WebLockerService");
