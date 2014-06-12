@@ -105,27 +105,37 @@ function willCaptureThisUrl(url, callback) {
 	           //alert("url:" + url);
                if(result.caseUrl.length != 0) {
 	               if(matchModel == "domain") {
-	               	   destUrl = result.caseUrl;
-	               	   //alert("destUrl:" + destUrl);
-	               	   //alert("currentUrl:" + url);
-	                   var arr1 = parseURL(destUrl);
-	                   var arr2 = parseURL(url);
-	                   
-	                   if(arr1.host.indexOf("www.") == -1) {
-	                   	arr1.host = "www." + arr1.host;
-	                   } 
-	                   
-	                   if(arr2.host.indexOf("www.") == -1) {
-                        arr2.host = "www." + arr2.host;
-                       } 
-                       //alert("domain1:" + arr1.host);
-                       //alert("domain2:" + arr2.host);
+                       var match = false;
                        
-	                   if(arr1.host == arr2.host) {
-	                   	   callback(true);
-	                   } else {
-	                   	   callback(false);
-	                   }
+                       var destUrls = result.caseUrl.split(" ")
+                       for(var i = 0; i < destUrls.length; i++) {
+                           
+                           destUrl = destUrls[i];
+                           //alert("destUrl:" + destUrl);
+                           //alert("currentUrl:" + url);
+                           var arr1 = parseURL(destUrl);
+                           var arr2 = parseURL(url);
+                           
+                           if(arr1.host.indexOf("www.") == -1) {
+                            arr1.host = "www." + arr1.host;
+                           } 
+                           
+                           if(arr2.host.indexOf("www.") == -1) {
+                            arr2.host = "www." + arr2.host;
+                           } 
+                           //alert("domain1:" + arr1.host);
+                           //alert("domain2:" + arr2.host);
+                           
+                           if(arr1.host == arr2.host) {
+                               match = true;
+                               break;
+                           } else {
+                               
+                           }
+                       }
+                       
+                       callback(match)
+	               	   
 	               } else {
 	               	   if(url.indexOf(result.caseUrl) != -1) {
 	               	   	   callback(true);
