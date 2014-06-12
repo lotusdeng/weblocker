@@ -260,12 +260,16 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.wfile.write("\r\n")
         
     def appendCapturedUrlRecord(self, uuid, url, localMHTMLFilePath, md5, sha256):
+        print os.getcwd()
+        print self.server.case.myDir
         if not os.path.isdir(self.server.case.myDir.decode('UTF-8').encode(sysEncode)):
             os.makedirs(self.server.case.myDir.decode('UTF-8').encode(sysEncode))
         with open(os.path.join(self.server.case.myDir.decode('UTF-8').encode(sysEncode), 'capturedUrls.txt'), 'a') as fd:
             fd.write(uuid + '\t' + url + '\t' + localMHTMLFilePath + '\t' + md5 + '\t' + sha256 + '\n')
 
     def appendTryCaptureUrlRecord(self, uuid, url):
+        print os.getcwd()
+        print self.server.case.myDir
         if not os.path.isdir(self.server.case.myDir.decode('UTF-8').encode(sysEncode)):
             os.makedirs(self.server.case.myDir.decode('UTF-8').encode(sysEncode))
         with open(os.path.join(self.server.case.myDir.decode('UTF-8').encode(sysEncode), 'tryCaptureUrls.txt'), 'a') as fd:
@@ -276,7 +280,13 @@ class MyHTTPServer(HTTPServer):
     def __init__(self, server_address, RequestHandlerClass):
         HTTPServer.__init__(self, server_address, RequestHandlerClass)
         self.ip, self.port = server_address
-        self.case = CaseInfo('case.ini')
+        #import inspect
+        #this_file = inspect.getfile(inspect.currentframe())  
+        #dirpath = os.path.abspath(os.path.dirname(this_file))
+        #caseIniFilePath = os.path.join(dirpath, "case.ini")
+        #print caseIniFilePath
+        
+        self.case = CaseInfo("./case.ini")
         self.case.load()
         self.currentUse = 0
         self.maxUse = 30
