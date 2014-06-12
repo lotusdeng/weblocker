@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler  
 from urlparse import urlparse, parse_qs
 import os
@@ -5,8 +6,11 @@ import sys
 import hashlib
 import ConfigParser
 import httplib
+import urllib
 import time
 from multiprocessing import current_process
+
+sysEncode = sys.getfilesystemencoding()
 
 
 def calcMD5(stream):
@@ -128,12 +132,14 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         elif(fileFormat == "png" or fileFormat == "jpeg"):
             fileDirName = "picture"
         fileDirPath = os.path.join(self.server.case.myDir, fileDirName)
-        if(not os.path.isdir(fileDirPath)):
-            os.makedirs(fileDirPath)
+        
+        if(not os.path.isdir(fileDirPath.decode('UTF-8').encode(sysEncode))):
+            os.makedirs(fileDirPath.decode('UTF-8').encode(sysEncode))
             
         i = 1
         while True:
-            if os.path.exists(os.path.join(fileDirPath, tmpFileName + '.' + fileFormat)):
+            tmpFilePath = os.path.join(fileDirPath, tmpFileName + '.' + fileFormat)
+            if os.path.exists(tmpFilePath.decode('UTF-8').encode(sysEncode)):
                 tmpFileName = fileName + '_' + str(i)
             else:
                 break
@@ -143,7 +149,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         print 'save as ', fileName
 
         filePath = os.path.join(fileDirPath, fileName)
-        with open(filePath, 'wb') as fd:
+        with open(filePath.decode('UTF-8').encode(sysEncode), 'wb') as fd:
             fd.write(data)
 
         md5Str = "md5"
@@ -177,18 +183,16 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         paras = parse_qs(parsedURI.query)
         contentLen = int(self.headers['content-length'])
         data = self.rfile.read(contentLen)
-        try:
-            
-            if paras.has_key('caseName'):
-                self.server.case.name = paras['caseName'][0]
-            if paras.has_key('caseInvestigator'):
-                self.server.case.investigator = paras['caseInvestigator'][0]
-            if paras.has_key('caseLocation'):
-                self.server.case.location = paras['caseLocation'][0]
-            if paras.has_key('caseUrl'):
-                self.server.case.url =  paras['caseUrl'][0]
-        except :
-            pass
+       
+        if paras.has_key('caseName'):
+            self.server.case.name = paras['caseName'][0]
+        if paras.has_key('caseInvestigator'):
+            self.server.case.investigator = paras['caseInvestigator'][0]
+        if paras.has_key('caseLocation'):
+            self.server.case.location = paras['caseLocation'][0]
+        if paras.has_key('caseUrl'):
+            self.server.case.url =  paras['caseUrl'][0]
+        
         self.server.case.save()
         self.sendHttpOk()
         
@@ -207,7 +211,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.wfile.write("\r\n")
         
     def handlePostGenerateReport(self):
-        with open(os.path.join(self.server.case.myDir, 'report.txt'), 'a') as fd:
+        with open(os.path.join(self.server.case.myDir.decode('UTF-8').encode(sysEncode), 'report.txt'), 'a') as fd:
             fd.write("to do")
         os.system("python report.py")
         self.sendHttpOk()    
@@ -216,7 +220,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         data = "<html><head><title>file list</title></head>"
-        with open(os.path.join(self.server.case.myDir, 'capturedUrls.txt'), 'r') as fd:
+        with open(os.path.join(self.server.case.myDir.decode('UTF-8').encode(sysEncode), 'capturedUrls.txt'), 'r') as fd:
             lines = fd.readlines()
             for i in lines:
                 par = "<p>" + i + "</p>"
@@ -256,15 +260,15 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.wfile.write("\r\n")
         
     def appendCapturedUrlRecord(self, uuid, url, localMHTMLFilePath, md5, sha256):
-        if not os.path.isdir(self.server.case.myDir):
-            os.makedirs(self.server.case.myDir)
-        with open(os.path.join(self.server.case.myDir, 'capturedUrls.txt'), 'a') as fd:
+        if not os.path.isdir(self.server.case.myDir.decode('UTF-8').encode(sysEncode)):
+            os.makedirs(self.server.case.myDir.decode('UTF-8').encode(sysEncode))
+        with open(os.path.join(self.server.case.myDir.decode('UTF-8').encode(sysEncode), 'capturedUrls.txt'), 'a') as fd:
             fd.write(uuid + '\t' + url + '\t' + localMHTMLFilePath + '\t' + md5 + '\t' + sha256 + '\n')
 
     def appendTryCaptureUrlRecord(self, uuid, url):
-        if not os.path.isdir(self.server.case.myDir):
-            os.makedirs(self.server.case.myDir)
-        with open(os.path.join(self.server.case.myDir, 'tryCaptureUrls.txt'), 'a') as fd:
+        if not os.path.isdir(self.server.case.myDir.decode('UTF-8').encode(sysEncode)):
+            os.makedirs(self.server.case.myDir.decode('UTF-8').encode(sysEncode))
+        with open(os.path.join(self.server.case.myDir.decode('UTF-8').encode(sysEncode), 'tryCaptureUrls.txt'), 'a') as fd:
             fd.write(uuid + '\t' + url + '\n')
 
 
