@@ -285,7 +285,8 @@ class MyHTTPServer(HTTPServer):
             while not self.stopped:
                 print "HTTPServer::handle_request"
                 self.handle_request()
-        except:
+        except Exception, e:
+            print "HTTPServer::handle_request throw a exception:" + e;
             pass
         print "HttpServer server_forever exit"
     def stop(self):
