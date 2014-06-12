@@ -31,11 +31,13 @@ try {
                 //alert("chrome page");
                 return;
             }
+            //alert("info.status=" + info.status+", tab.url="+tab.url);
             if (info.status == "complete") {
-                //alert("start willCaptureThisUrl");
+                
                 willCaptureThisUrl(tab.url, function(captureIt){
                     //alert("willCaptureThisUrl start callback" );
                     if(captureIt) {
+                        //alert("doCaptureThisUrl");
                         doCaptureThisUrl(tab);
                     }
                 });
@@ -148,7 +150,7 @@ function sendFileToBackServer(query, blob) {
    try {
      //alert("sendFileToBackServer start ");
     $.ajax({
-            url: "http://localhost:8080/capturedUrl/add?" + query,
+            url: "http://127.0.0.1:8080/capturedUrl/add?" + query,
             cache: false,
             type: "POST",
             data: blob, 
@@ -159,7 +161,7 @@ function sendFileToBackServer(query, blob) {
             }
 
         }).fail(function(jqXHR, textStatus) {
-
+            alert("POST http://127.0.0.1:8080/capturedUrl/add fail, please restart WebLockerService");
         });
     } catch(err) {
         alert("sendFileToBackServer throw exception:" + err);
@@ -276,7 +278,7 @@ function tryCaptureThisUrl(tab) {
         var data = { 'url': tab.url, 'title': tab.title, 'uuid': tabUUIDs[tab.id]};
         query = EncodeQueryData(data);
         $.ajax({
-                url: "http://localhost:8080/tryCaptureUrl/add?" + query,
+                url: "http://127.0.0.1:8080/tryCaptureUrl/add?" + query,
                 cache: false,
                 type: "POST",
                 data: "test", 
@@ -287,6 +289,7 @@ function tryCaptureThisUrl(tab) {
                 }
     
         }).fail(function(jqXHR, textStatus) {
+            alert("POST http://127.0.0.1:8080/tryCaptureUrl/add fail, please restart WebLockerService");
         });
         
     } catch(err) {
@@ -316,7 +319,7 @@ function sendCaseInfoToBackServer(caseInfo) {
         
         query = EncodeQueryData(data);
         $.ajax({
-                url: "http://localhost:8080/setCaseInfo?" + query,
+                url: "http://127.0.0.1:8080/setCaseInfo?" + query,
                 cache: false,
                 type: "POST",
                 data: "test", 
@@ -327,7 +330,7 @@ function sendCaseInfoToBackServer(caseInfo) {
                 }
     
         }).fail(function(jqXHR, textStatus) {
-            alert("ajax http://localhost:8080/setCaseInfo fail, " + jqXHR +","+ textStatus);
+            alert("POST http://127.0.0.1:8080/setCaseInfo fail, please restart WebLockerService");
         });
         
     } catch(err) {
@@ -340,7 +343,7 @@ function sendGenerateReportToBackServer() {
         //alert("sendGenerateReportToBackServer start");
        
         $.ajax({
-                url: "http://localhost:8080/generateReport",
+                url: "http://127.0.0.1:8080/generateReport",
                 cache: false,
                 type: "POST",
                 data: "test", 
@@ -351,7 +354,7 @@ function sendGenerateReportToBackServer() {
                 }
     
         }).fail(function(jqXHR, textStatus) {
-            alert("ajax http://localhost:8080/generateReport fail, " + jqXHR +","+ textStatus);
+            alert("POST http://127.0.0.1:8080/generateReport fail, please restart WebLockerService");
         });
         
     } catch(err) {

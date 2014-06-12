@@ -69,11 +69,12 @@ function initCapturePicCheckbox() {
 
 function initCaseInfo() {
 	$.ajax({
-            url: "http://localhost:8080/caseInfo",
+            url: "http://127.0.0.1:8080/caseInfo",
             cache: false,
             type: "get",
             data: JSON.stringify({test:""}),
-            dataType: "json"
+            dataType: "json",
+            headers: {Connection: close}
         }).done(function(msg) {
             if(msg.error){
                 
@@ -93,8 +94,9 @@ function initCaseInfo() {
                 
             }
         }).fail(function(jqXHR, textStatus) {
-            
+            alert("GET http://127.0.0.1:8080/caseInfo fail, please restart WebLockerService");
         });
+    
 }
 
 function init() {

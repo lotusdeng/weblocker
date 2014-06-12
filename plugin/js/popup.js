@@ -37,11 +37,11 @@ function initCaseUrlText() {
 
 function initCaseInfo() {
     $.ajax({
-            url: "http://localhost:8080/caseInfo",
+            url: "http://127.0.0.1:8080/caseInfo",
             cache: false,
-            type: "get",
-            data: JSON.stringify({test:""}),
-            dataType: "json"
+            type: "get", 
+            timeout: 5
+            
         }).done(function(msg) {
         	
             if(msg.error){
@@ -61,8 +61,8 @@ function initCaseInfo() {
                 caseLocationText.value = msg.caseLocation;
                 
             }
-        }).fail(function(jqXHR, textStatus) {
-            
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            alert("GET http://127.0.0.1:8080/caseInfo fail, please restart WebLockerService");
         });
 }
 
