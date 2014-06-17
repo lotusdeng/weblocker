@@ -6,7 +6,7 @@
 
     "description": "",
     "browser_action": {
-        "default_icon": "images/pluginImage.jpg",
+        "default_icon": "images/icon.png",
         "default_title": "WebLocker",
         "default_popup": "popup.html"
     },
