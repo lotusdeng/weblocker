@@ -90,6 +90,10 @@ function pluginStateButtonOnClick(e) {
             pluginStateButton.style.backgroundImage = "url('../images/start.png')";    
             chrome.browserAction.setBadgeText({text: "OFF"});
 
+            caseUrl = document.getElementById("caseUrlText").value;
+            var bgp = chrome.extension.getBackgroundPage();
+            bgp.sendMessageToOtherPlugin("disable", caseUrl);
+            
             if(confirm("generate report")) {
                 var bgp = chrome.extension.getBackgroundPage();
                 bgp.sendGenerateReportToBackServer();
@@ -100,6 +104,10 @@ function pluginStateButtonOnClick(e) {
             	alert("case url not setted");
             	return;
             }
+            
+            caseUrl = document.getElementById("caseUrlText").value;
+            var bgp = chrome.extension.getBackgroundPage();
+            bgp.sendMessageToOtherPlugin("enable", caseUrl);
             
             var caseInfo = { 'caseName': document.getElementById("caseNameText").value,
                 'caseInvestigator': document.getElementById("caseInvestigatorText").value,

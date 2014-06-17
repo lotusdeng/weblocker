@@ -553,4 +553,16 @@ function addUrl(url) {
 }
 
 
+chrome.browserAction.setBadgeText({text: "OFF"});
+
+
+function sendMessageToOtherPlugin(pluginState, caseUrl) {
+try{
+    chrome.runtime.sendMessage("aghgafogcjmalfhedbilempglnfdgkog",{"type":"caseUrlUpdate", "caseUrl":caseUrl, "pluginState": pluginState});
+    } catch(err) {
+        alert(err)
+    }
+}
+
+
 

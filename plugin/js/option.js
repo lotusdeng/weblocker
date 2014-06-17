@@ -121,11 +121,18 @@ function saveButtonOnClick(e) {
     chrome.storage.local.set({"caseInvestigator": document.getElementById("caseInvestigatorText").value}, function(){});
     chrome.storage.local.set({"caseUrl": document.getElementById("caseUrlText").value}, function(){});
     
-    try{
-    chrome.runtime.sendMessage("ilpmpcljipabdggabhafccooklcdmgai",{"type":"caseUrlUpdate", "caseUrl":document.getElementById("caseUrlText").value});
-    } catch(err) {
-        alert(err)
-    }
+    caseUrl = document.getElementById("caseUrlText").value;
+    chrome.storage.local.get("pluginState", function(result) {
+        //alert("pluginState=" + result.pluginState);
+        if(result.pluginState == "enable")  {
+            var bgp = chrome.extension.getBackgroundPage();
+            bgp.sendMessageToOtherPlugin("enable", caseUrl)
+        } else {
+            var bgp = chrome.extension.getBackgroundPage();
+            bgp.sendMessageToOtherPlugin("disable", caseUrl)
+        }
+     });
+    
         
     chrome.storage.local.set({"caseLocation": document.getElementById("caseLocationText").value}, function(){});
     
