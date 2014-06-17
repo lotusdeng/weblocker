@@ -7,8 +7,10 @@ function initPluginStateButton() {
     chrome.storage.local.get("pluginState", function(result){
         if(result.pluginState == "enable") {
             pluginStateButton.style.backgroundImage = "url('../images/end.png')";
+            chrome.browserAction.setBadgeText({text: "ON"});
         } else {
             pluginStateButton.style.backgroundImage = "url('../images/start.png')";
+            chrome.browserAction.setBadgeText({text: "OFF"});
         }
     });
 }
@@ -86,11 +88,13 @@ function pluginStateButtonOnClick(e) {
         if(result.pluginState == "enable") {
             chrome.storage.local.set({"pluginState": "disable"}, function(){});
             pluginStateButton.style.backgroundImage = "url('../images/start.png')";    
-           
+            chrome.browserAction.setBadgeText({text: "OFF"});
+
             if(confirm("generate report")) {
                 var bgp = chrome.extension.getBackgroundPage();
                 bgp.sendGenerateReportToBackServer();
             }
+
         } else {
             if(document.getElementById("caseUrlText").value.length == 0) {
             	alert("case url not setted");
@@ -105,7 +109,8 @@ function pluginStateButtonOnClick(e) {
             bgp.sendCaseInfoToBackServer(caseInfo);
             
             chrome.storage.local.set({"pluginState": "enable"}, function(){});  
-            pluginStateButton.style.backgroundImage = "url('../images/end.png')";  
+            pluginStateButton.style.backgroundImage = "url('../images/end.png')"; 
+            chrome.browserAction.setBadgeText({text: "ON"}); 
             
             chrome.storage.local.set({"caseUrl": document.getElementById("caseUrlText").value}, function(){});  
         }
