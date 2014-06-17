@@ -120,6 +120,13 @@ function saveButtonOnClick(e) {
     chrome.storage.local.set({"caseName": document.getElementById("caseNameText").value}, function(){});
     chrome.storage.local.set({"caseInvestigator": document.getElementById("caseInvestigatorText").value}, function(){});
     chrome.storage.local.set({"caseUrl": document.getElementById("caseUrlText").value}, function(){});
+    
+    try{
+    chrome.runtime.sendMessage("ilpmpcljipabdggabhafccooklcdmgai",{"type":"caseUrlUpdate", "caseUrl":document.getElementById("caseUrlText").value});
+    } catch(err) {
+        alert(err)
+    }
+        
     chrome.storage.local.set({"caseLocation": document.getElementById("caseLocationText").value}, function(){});
     
     if(document.getElementById("md5Checkbox").checked) {
