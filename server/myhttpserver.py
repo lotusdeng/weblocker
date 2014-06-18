@@ -10,6 +10,7 @@ import urllib
 import time
 from multiprocessing import current_process
 import traceback
+import thread
 
 reload(sys)    
 sys.setdefaultencoding('utf-8')   #修改默认编码方式，默认为ascci  
@@ -217,7 +218,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
             fd.write("to do")
         import report
         report = report.Report()
-        report.run()
+        thread.start_new(report.run, ())
         self.sendHttpOk()    
     
     def handleGetFileList(self):
