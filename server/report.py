@@ -49,7 +49,8 @@ class Report(object):
         """
         Run the report
         """
-        self.doc = SimpleDocTemplate("report.pdf")
+        reportPath = os.path.join(self.caseLocation, self.caseName, "报告.pdf")
+        self.doc = SimpleDocTemplate(reportPath.decode('UTF-8'))
         self.story = [Spacer(1, 1.7*inch)]
         self.createLineItems()
  
