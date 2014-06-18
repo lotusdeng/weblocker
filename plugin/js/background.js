@@ -23,48 +23,50 @@ function generateUUID() {
            s4() + '-' + s4() + s4() + s4();
 }
 
-try {
-	chrome.storage.local.set({"pluginState": "disable"}, function(){});
-//	chrome.storage.local.set({"caseName": "case1"}, function(){});
-//	chrome.storage.local.set({"caseInvestigator": "denglian"}, function(){});
-//	chrome.storage.local.set({"caseUrl": ""}, function(){});
-	chrome.storage.local.set({"caseLocation": "cases"}, function(){});
-	chrome.storage.local.set({"md5": "disable"}, function(){});
-	chrome.storage.local.set({"sha256": "disable"}, function(){});
-	chrome.storage.local.set({"capturePic": "disable"}, function(){});
-	
-    chrome.tabs.onUpdated.addListener(function(tabId , info) {
-        //alert("chrome.tabs.onUpdated event happen");
-        chrome.tabs.get(tabId, function(tab){
-            //alert("info.status=" + info.status+", tab.url="+tab.url);
+function tabUpdateListener(tabId, info) {
+//alert("chrome.tabs.onUpdated event happen");
+    chrome.tabs.get(tabId, function(tab){
+        //alert("info.status=" + info.status+", tab.url="+tab.url);
+        
+        if(tab.url.indexOf("chrome") == 0) {
+            //alert("chrome page");
+            return;
+        }
+        //alert("info.status=" + info.status+", tab.url="+tab.url);
+        if (info.status == "complete") {
             
-            if(tab.url.indexOf("chrome") == 0) {
-                //alert("chrome page");
-                return;
-            }
-            //alert("info.status=" + info.status+", tab.url="+tab.url);
-            if (info.status == "complete") {
-                
-                willCaptureThisUrl(tab.url, function(captureIt){
-                    //alert("willCaptureThisUrl start callback" );
-                    if(captureIt) {
-                        //alert("doCaptureThisUrl");
-                        doCaptureThisUrl(tab);
-                    }
-                });
-            } else if(info.status == "loading") {
-                currentUrlUUID = generateUUID();
-               	tabUUIDs[tab.id] = currentUrlUUID;
-                willCaptureThisUrl(tab.url, function(captureIt) {
-                    if(captureIt) {
-                    	tryCaptureThisUrl(tab);
-                    }
-                });
-            } else {
-               	
-            }
-        });
+            willCaptureThisUrl(tab.url, function(captureIt){
+                //alert("willCaptureThisUrl start callback" );
+                if(captureIt) {
+                    //alert("doCaptureThisUrl");
+                    doCaptureThisUrl(tab);
+                }
+            });
+        } else if(info.status == "loading") {
+            currentUrlUUID = generateUUID();
+            tabUUIDs[tab.id] = currentUrlUUID;
+            willCaptureThisUrl(tab.url, function(captureIt) {
+                if(captureIt) {
+                    tryCaptureThisUrl(tab);
+                }
+            });
+        } else {
+            
+        }
     });
+}
+
+
+//background init
+
+try {
+    //alert("background js init");
+	//chrome.storage.local.set({"pluginState": "disable"}, function(){});
+	//chrome.storage.local.set({"md5": "disable"}, function(){});
+	//chrome.storage.local.set({"sha256": "disable"}, function(){});
+	//chrome.storage.local.set({"capturePic": "disable"}, function(){});
+	
+    chrome.tabs.onUpdated.addListener(tabUpdateListener);
     
     
     chrome.extension.onRequest.addListener(function(request, sender, callback) {
@@ -74,6 +76,14 @@ try {
             console.error('Unknown message received from content script: ' + request.msg);
         }
     });
+    
+    chrome.browserAction.setBadgeText({text: "OFF"});
+    chrome.storage.local.get("pluginState", function(result){
+        if(result.pluginState.length != 0 && result.pluginState == "enable") {
+            chrome.browserAction.setBadgeText({text: "ON"});
+        }
+    });
+
 } catch(err) {
     alert("chrome.tabs.onUpdated.addListener throw exception:" + err);
 }
@@ -564,7 +574,6 @@ function addUrl(url) {
 }
 
 
-chrome.browserAction.setBadgeText({text: "OFF"});
 
 
 function sendMessageToOtherPlugin(pluginState, caseUrl) {
