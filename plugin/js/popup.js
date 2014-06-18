@@ -94,7 +94,7 @@ function pluginStateButtonOnClick(e) {
             var bgp = chrome.extension.getBackgroundPage();
             bgp.sendMessageToOtherPlugin("disable", caseUrl);
             
-            if(confirm("generate report")) {
+            if(confirm("生成报告")) {
                 var bgp = chrome.extension.getBackgroundPage();
                 bgp.sendGenerateReportToBackServer();
             }
