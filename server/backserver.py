@@ -1,5 +1,7 @@
 import myhttpserver
 import os
+import sys
+os.environ["PATH"] = sys.prefix + ";" + os.environ["PATH"]
 import win32con, win32file, pywintypes
 
 LOCK_EX = win32con.LOCKFILE_EXCLUSIVE_LOCK
