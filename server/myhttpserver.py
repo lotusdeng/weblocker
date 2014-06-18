@@ -115,11 +115,6 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         print '\n'
         
     def handlePostCapturedUrl(self):
-        self.server.currentUse += 1
-        if(self.server.currentUse > self.server.maxUse):
-            print "this is trial version, only use 30 times"
-            self.sendHttpFail("this is trial version, only use 30 times")
-            pass
         parsedURI = urlparse(self.path)
         paras = parse_qs(parsedURI.query)
         contentLen = int(self.headers['content-length'])
@@ -210,11 +205,12 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
                           "caseInvestigator": self.server.case.investigator,
                           "caseUrl": self.server.case.url,
                           "caseLocation": self.server.case.location})
+        data = data + "\r\n"
         self.send_header("Content-Length", str(len(data)))
         print data
         self.end_headers()
         self.wfile.write(data)
-        self.wfile.write("\r\n")
+
         
     def handlePostGenerateReport(self):
         with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'report.txt'), 'a') as fd:
@@ -233,39 +229,38 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
             for i in lines:
                 par = "<p>" + i + "</p>"
                 data += par
-        data += "</html>"
+        data += "</html>\r\n"
         print data
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
-        self.wfile.write("\r\n")
+
         pass
     def handleGetStatus(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
-        data = "<html><head><title>status</title></head><body>ok</body></html>"
+        data = "<html><head><title>status</title></head><body>ok</body></html>\r\n"
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
-        self.wfile.write("\r\n")
+
         pass
     def sendHttpOk(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
-        data = "<html>ok</html>"
+        data = "<html>ok</html>\r\n"
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
-        self.wfile.write("\r\n")
         
     def sendHttpFail(self, error):
         self.send_response(500)
         self.send_header("Content-type", "text/html")
-        data = "<html>{0}</html>".format(error)
+        data = "<html>{0}</html>\r\n".format(error)
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
-        self.wfile.write("\r\n")
+
         
     def appendCapturedUrlRecord(self, uuid, url, localMHTMLFilePath, md5, sha256):
         print os.getcwd()
@@ -297,7 +292,8 @@ class MyHTTPServer(HTTPServer):
         self.case = CaseInfo("./case.ini")
         self.case.load()
         self.currentUse = 0
-        self.maxUse = 30
+        self.maxUse = 2
+        self.tryVersion = True
     def start(self):
         print "HttpServer server_forever start"
         try:
