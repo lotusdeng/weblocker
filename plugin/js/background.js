@@ -569,7 +569,7 @@ chrome.browserAction.setBadgeText({text: "OFF"});
 
 function sendMessageToOtherPlugin(pluginState, caseUrl) {
 try{
-    alert(weblockerurlExtensionId);
+    //alert(weblockerurlExtensionId);
     chrome.runtime.sendMessage(weblockerurlExtensionId, {"type":"caseUrlUpdate", "caseUrl":caseUrl, "pluginState": pluginState});
     } catch(err) {
         alert(err)
