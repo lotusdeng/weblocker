@@ -10,6 +10,6 @@
         "default_title": "WebLocker",
         "default_popup": "popup.html"
     },
-    "permissions": ["tabs", "windows", "storage", "pageCapture", "http://localhost/", "notifications",  "http://*/*","https://*/*","<all_urls>"],
+    "permissions": ["tabs", "management", "windows", "storage", "pageCapture", "http://localhost/", "notifications",  "http://*/*","https://*/*","<all_urls>"],
     "content_scripts":[{"matches":["http://*/*"], "js":["js/content.js"]}]
 }

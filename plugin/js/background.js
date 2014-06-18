@@ -1,5 +1,16 @@
 var tabUUIDs = {};
 
+var weblockerurlExtensionId = "";
+
+chrome.management.getAll(function callback(extensions){
+    for(i = 0; i < extensions.length; i++) {
+        //alert(extensions[i].id + ":" + extensions[i].name);
+        if(extensions[i].name == "WebLockerURL") {
+            weblockerurlExtensionId = extensions[i].id;
+            return;
+        }
+    }
+});
 function s4() {
     return Math.floor((1 + Math.random()) * 0x10000)
                .toString(16)
@@ -558,7 +569,8 @@ chrome.browserAction.setBadgeText({text: "OFF"});
 
 function sendMessageToOtherPlugin(pluginState, caseUrl) {
 try{
-    chrome.runtime.sendMessage("aghgafogcjmalfhedbilempglnfdgkog",{"type":"caseUrlUpdate", "caseUrl":caseUrl, "pluginState": pluginState});
+    alert(weblockerurlExtensionId);
+    chrome.runtime.sendMessage(weblockerurlExtensionId, {"type":"caseUrlUpdate", "caseUrl":caseUrl, "pluginState": pluginState});
     } catch(err) {
         alert(err)
     }
