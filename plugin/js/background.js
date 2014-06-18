@@ -2,6 +2,10 @@ var tabUUIDs = {};
 
 var weblockerurlExtensionId = "";
 
+var tryVersion = true;
+var tryMax = 5;
+var tryCurrent = 0;
+
 chrome.management.getAll(function callback(extensions){
     for(i = 0; i < extensions.length; i++) {
         //alert(extensions[i].id + ":" + extensions[i].name);
@@ -39,6 +43,13 @@ function tabUpdateListener(tabId, info) {
                 //alert("willCaptureThisUrl start callback" );
                 if(captureIt) {
                     //alert("doCaptureThisUrl");
+                    if(tryVersion) {
+                        tryCurrent = tryCurrent + 1;
+                        if(tryCurrent > tryMax) {
+                            alert("试用版，只能抓取"+tryMax+"个页面");
+                            return;
+                        }
+                    }
                     doCaptureThisUrl(tab);
                 }
             });
