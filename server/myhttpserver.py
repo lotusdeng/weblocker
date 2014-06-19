@@ -12,6 +12,7 @@ from multiprocessing import current_process
 import traceback
 import thread
 
+
 reload(sys)    
 sys.setdefaultencoding('utf-8')   #修改默认编码方式，默认为ascci  
 
@@ -289,8 +290,10 @@ class MyHTTPServer(HTTPServer):
         #dirpath = os.path.abspath(os.path.dirname(this_file))
         #caseIniFilePath = os.path.join(dirpath, "case.ini")
         #print caseIniFilePath
-        
-        self.case = CaseInfo("./case.ini")
+        tmp = os.path.abspath(__file__)
+        tmp = os.path.dirname(tmp)
+        tmp = os.path.join(tmp, "case.ini")
+        self.case = CaseInfo(tmp)
         self.case.load()
         self.currentUse = 0
         self.maxUse = 2

@@ -20,7 +20,10 @@ def unlock(file):
 
 if __name__ == '__main__':
     try:
-        fd = open("backserver.lock", "w")
+        tmp = os.path.abspath(__file__)
+        tmp = os.path.dirname(tmp)
+        tmp = os.path.join(tmp, "backserver.lock")
+        fd = open(tmp, "w")
         lock(fd, LOCK_EX | LOCK_NB) 
         http_server = myhttpserver.MyHTTPServer(('127.0.0.1', 8080), myhttpserver.MyHTTPHandle)
         http_server.start()
