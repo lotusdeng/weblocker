@@ -10,7 +10,7 @@ import urllib
 import time
 from multiprocessing import current_process
 import traceback
-import thread
+import threading
 
 
 reload(sys)    
@@ -219,7 +219,9 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
             fd.write("to do")
         import report
         report = report.Report()
-        thread.start_new(report.run, ())
+        t1 = threading.Thread(target=report.run, args=())
+        t1.start()
+        
         self.sendHttpOk()    
     
     def handleGetFileList(self):
