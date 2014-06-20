@@ -420,7 +420,7 @@ function sendGenerateReportToBackServer() {
                 type: "POST",
                 data: "test", 
                 processData: false,
-                timeout: 1000
+                timeout: 3000
         }).done(function(msg) {
                 if(msg.error){
                 } else {
