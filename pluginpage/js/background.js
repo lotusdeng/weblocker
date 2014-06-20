@@ -47,6 +47,20 @@ function checkForValidUrl(tabId, changeInfo, tab) {
 
 chrome.tabs.onUpdated.addListener(checkForValidUrl);
 
+chrome.storage.local.get("pluginState", function callback(result){
+    if(result.pluginState) {
+    } else {
+        chrome.storage.local.set({"pluginState": "disable"});
+    }
+}); 
+
+chrome.storage.local.get("caseUrl", function callback(result){
+    if(result.caseUrl) {
+    } else {
+        chrome.storage.local.set({"caseUrl": ""});
+    }
+}); 
+
 // Bind event:
 chrome.runtime.onMessageExternal.addListener(
   function(request, sender, sendResponse) {
