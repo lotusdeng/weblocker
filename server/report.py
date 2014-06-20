@@ -28,7 +28,11 @@ class Report(object):
         self.styles = getSampleStyleSheet()
         
         cf = ConfigParser()
-        cf.read('case.ini')
+        tmp = os.path.abspath(__file__)
+        tmp = os.path.dirname(tmp)
+        tmp = os.path.join(tmp, "case.ini")
+        print "case.ini:" + tmp
+        cf.read(tmp)
         self.caseLocation = cf.get('case', 'caseLocation')
         self.caseName = cf.get('case', 'caseName')
         self.caseUrl = cf.get('case', 'caseUrl')
