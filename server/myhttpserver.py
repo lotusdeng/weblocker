@@ -293,6 +293,7 @@ class MyHTTPServer(HTTPServer):
         tmp = os.path.abspath(__file__)
         tmp = os.path.dirname(tmp)
         tmp = os.path.join(tmp, "case.ini")
+        print "case.ini:" + tmp
         self.case = CaseInfo(tmp)
         self.case.load()
         self.currentUse = 0
