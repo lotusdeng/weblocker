@@ -42,7 +42,6 @@ function tabUpdateListener(tabId, info) {
             willCaptureThisUrl(tab.url, function(captureIt){
                 //alert("willCaptureThisUrl start callback" );
                 if(captureIt) {
-                    //alert("doCaptureThisUrl");
                     if(tryVersion) {
                         tryCurrent = tryCurrent + 1;
                         if(tryCurrent > tryMax) {
@@ -71,11 +70,33 @@ function tabUpdateListener(tabId, info) {
 //background init
 
 try {
-    //alert("background js init");
-	//chrome.storage.local.set({"pluginState": "disable"}, function(){});
-	//chrome.storage.local.set({"md5": "disable"}, function(){});
-	//chrome.storage.local.set({"sha256": "disable"}, function(){});
-	//chrome.storage.local.set({"capturePic": "disable"}, function(){});
+    chrome.storage.local.get("pluginState", function callback(result){
+        if(result.pluginState) {
+        } else {
+            chrome.storage.local.set({"pluginState": "disable"}, function(){});
+        }
+    });
+    
+    chrome.storage.local.get("md5", function callback(result){
+        if(result.md5) {
+        } else {
+            chrome.storage.local.set({"md5": "disable"}, function(){});
+        }
+    });
+    
+	chrome.storage.local.get("sha256", function callback(result){
+        if(result.sha256) {
+        } else {
+            chrome.storage.local.set({"sha256": "disable"}, function(){});
+        }
+    });
+	
+    chrome.storage.local.get("capturePic", function callback(result){
+        if(result.capturePic) {
+        } else {
+            chrome.storage.local.set({"capturePic": "disable"}, function(){});
+        }
+    });
 	
     chrome.tabs.onUpdated.addListener(tabUpdateListener);
     
@@ -197,7 +218,7 @@ function sendFileToBackServer(query, blob) {
             type: "POST",
             data: blob, 
 	   		processData: false,
-            timeout: 500
+            timeout: 1000
         }).done(function(msg) {
             if(msg.error){
             } else {
@@ -328,7 +349,7 @@ function tryCaptureThisUrl(tab) {
                 type: "POST",
                 data: "test", 
                 processData: false,
-                timeout: 500
+                timeout: 1000
         }).done(function(msg) {
                 if(msg.error){
                 } else {
@@ -372,7 +393,7 @@ function sendCaseInfoToBackServer(caseInfo) {
                 type: "POST",
                 data: "test", 
                 processData: false,
-                timeout: 500
+                timeout: 1000
         }).done(function(msg) {
                 if(msg.error){
                 } else {
@@ -399,7 +420,7 @@ function sendGenerateReportToBackServer() {
                 type: "POST",
                 data: "test", 
                 processData: false,
-                timeout: 500
+                timeout: 1000
         }).done(function(msg) {
                 if(msg.error){
                 } else {

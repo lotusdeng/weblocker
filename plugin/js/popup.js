@@ -42,7 +42,7 @@ function initCaseInfo() {
             url: "http://127.0.0.1:8080/caseInfo",
             cache: false,
             type: "get", 
-            timeout: 500
+            timeout: 1000
         }).done(function(msg) {
         	
             if(msg.error){
