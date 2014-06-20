@@ -14,7 +14,21 @@ import threading
 
 
 reload(sys)    
-sys.setdefaultencoding('utf-8')   #修改默认编码方式，默认为ascci  
+sys.setdefaultencoding('utf-8')   #修改默认编码方式，默认为ascci 
+
+logs = []
+
+def log(msg):
+    print msg
+    global logs
+    logs.append(str(msg))
+    if len(logs) > 1000:
+        clear_log()
+        
+
+def clear_log():
+    global logs
+    logs[:] = []
 
 
 
@@ -56,14 +70,14 @@ class CaseInfo:
     
 class MyHTTPHandle(BaseHTTPRequestHandler):
     def do_POST(self):
-        print '<<<<<<<<<<<<<<<<<<----------------------------------'
-        print time.strftime("%Y-%m-%d %H:%M:%S")
-        print "POST " + self.path
-        print self.headers
+        log('<<<<<<<<<<<<<<<<<<----------------------------------')
+        log(time.strftime("%Y-%m-%d %H:%M:%S"))
+        log("POST " + self.path)
+        log(self.headers)
 
         parsedURI = urlparse(self.path)
         paras = parse_qs(parsedURI.query)
-        print paras
+        log(paras)
         uriPath = parsedURI.path
 
         try:
@@ -79,16 +93,18 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
                 self.sendHttpFail("unknown uri:" + uriPath)
             
         except Exception, e:
-            print 'Exception occur:' + str(e)
-            print traceback.print_exc()
-            self.sendHttpFail(str(e))    
-        print '>>>>>>>>>>>>>>>>>>>----------------------------------'
-        print '\n'
+            import StringIO
+            fp = StringIO.StringIO()    #创建内存文件对象
+            traceback.print_exc(file=fp)
+            msg = fp.getvalue()
+            log(msg)   
+        log('>>>>>>>>>>>>>>>>>>>----------------------------------')
+
     def do_GET(self): 
-        print '<<<<<<<<<<<<<<<<<<----------------------------------'
-        print time.strftime("%Y-%m-%d %H:%M:%S")
-        print "GET " + self.path
-        print self.headers
+        log('<<<<<<<<<<<<<<<<<<----------------------------------')
+        log(time.strftime("%Y-%m-%d %H:%M:%S"))
+        log("GET " + self.path)
+        log(self.headers)
         parsedURI = urlparse(self.path)
         uriPath = parsedURI.path
         
@@ -104,15 +120,23 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
                 pass
             elif(uriPath =="/quit"):
                 self.handleGetQuit()
+            elif(uriPath == "/log"):
+                self.handleGetLog();
+            elif(uriPath == "/clearlog"):
+                a = b
+                self.handleGetClearLog()
             else:
                 self.sendHttpFail("unknown uri:" + uriPath)
         except SystemExit:
-            print 'Exception SystemExit occur, so exit with 0'
+            log('Exception SystemExit occur, so exit with 0')
             exit(0)
         except Exception, e:
-            print 'Exception occur:' + str(e)
-            print traceback.print_exc()
-            self.sendHttpFail(str(e))
+            import StringIO
+            fp = StringIO.StringIO()    #创建内存文件对象
+            traceback.print_exc(file=fp)
+            msg = fp.getvalue()
+            log(msg)
+            self.sendHttpFail(msg)
         print '>>>>>>>>>>>>>>>>>>>----------------------------------' 
         print '\n'
         
@@ -238,8 +262,32 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
-
         pass
+        
+    def handleGetLog(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        global logs
+        tmp = ""
+        for i in logs:
+            l = "<p>{0}</p>".format(i)
+            tmp += l
+        print tmp
+        data = "<html><head><title>status</title></head><body>{0}</body></html>\r\n".format(tmp)
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+        pass
+    def handleGetClearLog(self):
+        clear_log()
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        data = "<html><head><title>status</title></head><body>clear log ok</body></html>\r\n"
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+        pass
+        
     def handleGetStatus(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -295,7 +343,7 @@ class MyHTTPServer(HTTPServer):
         tmp = os.path.abspath(__file__)
         tmp = os.path.dirname(tmp)
         tmp = os.path.join(tmp, "case.ini")
-        print "case.ini:" + tmp
+        log("case.ini:" + tmp)
         self.case = CaseInfo(tmp)
         self.case.load()
         self.currentUse = 0
