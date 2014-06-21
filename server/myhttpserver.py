@@ -246,8 +246,10 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'report.txt'), 'a') as fd:
             fd.write("to do")
         import report
+        from multiprocessing import Process
         report = report.Report()
-        t1 = threading.Thread(target=report.run, args=())
+        #t1 = threading.Thread(target=report.run, args=())
+        t1 = Process(target=report.run, args=())
         t1.start()
         
         self.sendHttpOk()    
