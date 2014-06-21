@@ -3,7 +3,7 @@ var tabUUIDs = {};
 var weblockerurlExtensionId = "";
 
 var tryVersion = true;
-var tryMax = 5;
+var tryMax = 5 + 15;
 var tryCurrent = 0;
 
 chrome.management.getAll(function callback(extensions){
