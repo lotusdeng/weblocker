@@ -70,6 +70,7 @@ class CaseInfo:
     
 class MyHTTPHandle(BaseHTTPRequestHandler):
     def do_POST(self):
+        t1 = time.time()
         log('<<<<<<<<<<<<<<<<<<----------------------------------')
         log(time.strftime("%Y-%m-%d %H:%M:%S"))
         log("POST " + self.path)
@@ -98,9 +99,12 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
             traceback.print_exc(file=fp)
             msg = fp.getvalue()
             log(msg)   
+        t2 = time.time()
+        log("use {0} ".format(t2 - t1));
         log('>>>>>>>>>>>>>>>>>>>----------------------------------')
 
     def do_GET(self): 
+        t1 = time.time()
         log('<<<<<<<<<<<<<<<<<<----------------------------------')
         log(time.strftime("%Y-%m-%d %H:%M:%S"))
         log("GET " + self.path)
@@ -123,7 +127,6 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
             elif(uriPath == "/log"):
                 self.handleGetLog();
             elif(uriPath == "/clearlog"):
-                a = b
                 self.handleGetClearLog()
             else:
                 self.sendHttpFail("unknown uri:" + uriPath)
@@ -137,8 +140,9 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
             msg = fp.getvalue()
             log(msg)
             self.sendHttpFail(msg)
-        print '>>>>>>>>>>>>>>>>>>>----------------------------------' 
-        print '\n'
+        t2 = time.time()
+        log("use {0} ".format(t2 - t1));
+        log('>>>>>>>>>>>>>>>>>>>----------------------------------') 
         
     def handlePostCapturedUrl(self):
         parsedURI = urlparse(self.path)
