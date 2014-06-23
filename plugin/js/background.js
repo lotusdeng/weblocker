@@ -610,8 +610,10 @@ function addUrl(url) {
 
 function sendMessageToOtherPlugin(pluginState, caseUrl) {
 try{
-    //alert(weblockerurlExtensionId);
-    chrome.runtime.sendMessage(weblockerurlExtensionId, {"type":"caseUrlUpdate", "caseUrl":caseUrl, "pluginState": pluginState});
+
+    if(weblockerurlExtensionId != "") {
+        chrome.runtime.sendMessage(weblockerurlExtensionId, {"type":"caseUrlUpdate", "caseUrl":caseUrl, "pluginState": pluginState});    
+    }
     } catch(err) {
         alert(err)
     }
