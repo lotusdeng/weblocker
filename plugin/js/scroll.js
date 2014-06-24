@@ -75,7 +75,6 @@ function scrollPageToButtom(callback) {
         
     }, 500);
     
-    callback();
     //windows.scrollTo(0, 0);
 }
 

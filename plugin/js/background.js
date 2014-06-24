@@ -49,7 +49,8 @@ function tabUpdateListener(tabId, info) {
                             return;
                         }
                     }
-                    doCaptureThisUrl(tab);
+                    MoveWindowScrollToBottom(tab, doCaptureThisUrl);
+                    
                 }
             });
         } else if(info.status == "loading") {
@@ -328,10 +329,8 @@ function doCaptureThisUrl(tab) {
 //             saveTabAsMHTML(tab);                    
 //        }              
 //    });        
-    MoveWindowScrollToBottom(tab);
-    //MoveWindowScrollToTop(tab);
-        
-    saveTabAsMHTML(tab);
+   
+    saveTabAsMHTML(tab); 
     
     chrome.storage.local.get('capturePic', function(result) {
         if(result.capturePic.length != 0 && result.capturePic == "enable") {
@@ -459,14 +458,14 @@ function saveTabPageAsPicture(tab) {
     }
 }
 
-function MoveWindowScrollToBottom(tab) {
+function MoveWindowScrollToBottom(tab, callback) {
     try {
         //alert("MoveWindowScrollToBottom start");
         chrome.tabs.executeScript(tab.id, {file: 'js/scroll.js'}, function() {
             
            chrome.tabs.sendRequest(tab.id, {msg: 'scrollPageToBottom'}, function() {
-                MoveWindowScrollToTop(tab);
-           
+                //alert("scrollPageToBottom callback");
+                callback(tab);
             });
         });
 
