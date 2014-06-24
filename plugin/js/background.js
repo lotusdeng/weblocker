@@ -327,7 +327,10 @@ function doCaptureThisUrl(tab) {
 //        if(result.saveAsMHTML.length != 0 && result.saveAsMHTML == "enable") {
 //             saveTabAsMHTML(tab);                    
 //        }              
-//    });                
+//    });        
+    MoveWindowScrollToBottom(tab);
+    //MoveWindowScrollToTop(tab);
+        
     saveTabAsMHTML(tab);
     
     chrome.storage.local.get('capturePic', function(result) {
@@ -456,6 +459,46 @@ function saveTabPageAsPicture(tab) {
     }
 }
 
+function MoveWindowScrollToBottom(tab) {
+    try {
+        //alert("MoveWindowScrollToBottom start");
+        chrome.tabs.executeScript(tab.id, {file: 'js/scroll.js'}, function() {
+            
+           chrome.tabs.sendRequest(tab.id, {msg: 'scrollPageToBottom'}, function() {
+                MoveWindowScrollToTop(tab);
+           
+            });
+        });
+
+         window.setTimeout(function() {
+            
+        }, 1000);
+        
+    } catch(e) {
+        alert("getPositons throw exception:" + err);
+    }
+
+}
+
+function MoveWindowScrollToTop(tab) {
+    try {
+        //alert("saveTabAsPicture2 start");
+        chrome.tabs.executeScript(tab.id, {file: 'js/scroll.js'}, function() {
+            
+           chrome.tabs.sendRequest(tab.id, {msg: 'scrollPageToTop'}, function() {
+           
+            });
+        });
+
+         window.setTimeout(function() {
+            
+        }, 1000);
+        
+    } catch(e) {
+        alert("getPositons throw exception:" + err);
+    }
+
+}
 
 //
 // Events

@@ -1,7 +1,12 @@
 
 function onMessage(request, sender, callback) {
+    //alert("screen.js receive " + request.msg);
     if (request.msg === 'scrollPage') {
         getPositions(callback);
+    } else if (request.msg === 'scrollPageToBottom') {
+        scrollPageToButtom(callback);
+    } else if (request.msg === 'scrollPageToTop') {
+        scrollPageToTop(callback);
     } else {
         console.error('Unknown message received from background: ' + request.msg);
     }
@@ -15,6 +20,43 @@ if (!window.hasScreenCapturePage) {
 function max(nums) {
     return Math.max.apply(Math, nums.filter(function(x) { return x; }));
 }
+
+function scrollPageToTop(callback) {
+    //alert("scrollPageToTop");
+    window.scrollTo(0, 0);
+}
+
+function scrollPageToButtom(callback) {
+    //alert("scrollPageToButtom start");
+    var body = document.body,
+        widths = [
+            document.documentElement.clientWidth,
+            document.body.scrollWidth,
+            document.documentElement.scrollWidth,
+            document.body.offsetWidth,
+            document.documentElement.offsetWidth
+        ],
+        heights = [
+            document.documentElement.clientHeight,
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.offsetHeight
+        ],
+        fullWidth = max(widths),
+        fullHeight = max(heights),
+        windowWidth = window.innerWidth,
+        windowHeight = window.innerHeight,
+        originalX = window.scrollX,
+        originalY = window.scrollY;
+    //alert(originalX + ":" + originalY);
+    window.scrollTo(fullWidth, fullHeight);
+    //alert(fullWidth + ":" + fullHeight);
+    
+    callback();
+    //windows.scrollTo(0, 0);
+}
+
 
 function getPositions(callback) {
 	var pictureFormat = "png";
