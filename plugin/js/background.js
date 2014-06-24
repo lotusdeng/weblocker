@@ -448,11 +448,6 @@ function saveTabPageAsPicture(tab) {
             
             sendScrollMessage(tab);
         });
-
-         window.setTimeout(function() {
-            
-        }, 1000);
-        
     } catch(e) {
         alert("getPositons throw exception:" + err);
     }
@@ -468,10 +463,6 @@ function MoveWindowScrollToBottom(tab, callback) {
                 callback(tab);
             });
         });
-
-         window.setTimeout(function() {
-            
-        }, 1000);
         
     } catch(e) {
         alert("getPositons throw exception:" + err);
@@ -488,10 +479,6 @@ function MoveWindowScrollToTop(tab) {
            
             });
         });
-
-         window.setTimeout(function() {
-            
-        }, 1000);
         
     } catch(e) {
         alert("getPositons throw exception:" + err);
