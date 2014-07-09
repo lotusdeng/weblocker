@@ -28,7 +28,7 @@ class Report(object):
         self.styles = getSampleStyleSheet()
         
         cf = ConfigParser()
-        tmp = os.path.abspath(__file__)
+        tmp = os.path.abspath(sys.argv[0])
         tmp = os.path.dirname(tmp)
         tmp = os.path.join(tmp, "case.ini")
         print "case.ini:" + tmp

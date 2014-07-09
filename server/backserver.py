@@ -27,7 +27,7 @@ def unlock(file):
     win32file.UnlockFileEx(hfile, 0, 0xffff0000, __overlapped)
 
 def start_browser():
-     tmp = os.path.abspath(__file__)
+     tmp = os.path.abspath(sys.argv[0])
      tmp = os.path.dirname(tmp)
      tmp = os.path.join(tmp, "../browser", "browser.exe")
      os.system("start /b {0} --user-data-dir=UserData -enable-easy-off-store-extension-install".format(tmp))

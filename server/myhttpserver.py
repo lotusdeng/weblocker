@@ -346,7 +346,7 @@ class MyHTTPServer(HTTPServer):
         #dirpath = os.path.abspath(os.path.dirname(this_file))
         #caseIniFilePath = os.path.join(dirpath, "case.ini")
         #print caseIniFilePath
-        tmp = os.path.abspath(__file__)
+        tmp = os.path.abspath(sys.argv[0])
         tmp = os.path.dirname(tmp)
         tmp = os.path.join(tmp, "case.ini")
         log("case.ini:" + tmp)
