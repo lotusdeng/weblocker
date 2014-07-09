@@ -30,7 +30,7 @@ def start_browser():
      tmp = os.path.abspath(__file__)
      tmp = os.path.dirname(tmp)
      tmp = os.path.join(tmp, "../browser", "browser.exe")
-     os.system("start /b {0} --user-data-dir=userdata -enable-easy-off-store-extension-install".format(tmp))
+     os.system("start /b {0} --user-data-dir=UserData -enable-easy-off-store-extension-install".format(tmp))
      
 def hide_console():
     #time.sleep(30)
