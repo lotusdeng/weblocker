@@ -1,8 +1,10 @@
 1.从百度云上获取3rd.rar,解压3rd.rar
 
 
-2.安装python-2.7.7.msi
+2.安装python-2.7.7.msi;
 3.安装pywin32-219.win32-py2.7.exe
 4.安装py2exe-0.6.9.win32-py2.7.exe
-5.安装setuptools-5.1
-6.
+5.安装setuptools-5.1, cd setuptools-5.1 && python setup.py install
+6. python ez_setup.py
+7. cd pip python setup.py, add C:\Python27\Scripts path
+8. install reportlab, pip install reportlab-3.1.8-cp27
