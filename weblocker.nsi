@@ -5,7 +5,7 @@
 !define PRODUCT_VERSION "1.0"
 !define PRODUCT_PUBLISHER "My company, Inc."
 !define PRODUCT_WEB_SITE "http://www.mycompany.com"
-!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\delegate_execute.exe"
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\WebLocker"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
@@ -40,7 +40,11 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
+
 Section "MainSection" SEC01
+  SetOutPath "$INSTDIR"
+  SetOverwrite try
+  File "dist\key"
   SetOutPath "$INSTDIR\browser\34.0.1847.137"
   SetOverwrite try
   File "dist\browser\34.0.1847.137\34.0.1847.137.manifest"
@@ -268,10 +272,10 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\browser\34.0.1847.137\delegate_execute.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\server\backserver.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\browser\34.0.1847.137\delegate_execute.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\server\backserver.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -474,7 +478,7 @@ Section Uninstall
   Delete "$INSTDIR\browser\34.0.1847.137\chrome_100_percent.pak"
   Delete "$INSTDIR\browser\34.0.1847.137\chrome.dll"
   Delete "$INSTDIR\browser\34.0.1847.137\34.0.1847.137.manifest"
-
+  Delete "$INSTDIR\key"
   Delete "$SMPROGRAMS\WebLocker\Uninstall.lnk"
   Delete "$SMPROGRAMS\WebLocker\Website.lnk"
   Delete "$DESKTOP\WebLocker.lnk"
