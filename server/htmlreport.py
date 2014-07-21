@@ -118,8 +118,8 @@ class Report():
                 item = tryCaptureUrls[uuid]
                 item["id"] = id
                 item["result"] = "失败"
-                item["png"] = ""
-                item["md5"] = ""
+                item["png"] = " "
+                item["md5"] = " "
                 urls.append(item)
                 pass
             id += 1
@@ -131,15 +131,15 @@ class Report():
         return data
 
     def run(self):
-        if not os.path.exists(os.path.join(self.caseLocation, self.caseName, "css")):
-            shutil.copytree("report_template/css", os.path.join(self.caseLocation, self.caseName, "css"))
-
-        env = Environment(loader=FileSystemLoader('report_template'))
-        tmpl = env.get_template('template.html')
+	print "htmlreport start"
+	if not os.path.exists(os.path.join(self.caseLocation, self.caseName, "css")):
+	    shutil.copytree("report_template/css", os.path.join(self.caseLocation, self.caseName, "css"))
+	env = Environment(loader=FileSystemLoader('report_template'))
+	tmpl = env.get_template('template.html')
         data = self.generate_data()
         file_content = tmpl.render(data)
         report_path = os.path.join(self.caseLocation, self.caseName, "报告.html")
-        with open(report_path, "w") as fd:
+        with open(report_path.decode('UTF-8'), "w") as fd:
             fd.write(file_content)
 
 if __name__ == "__main__":
