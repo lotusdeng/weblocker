@@ -8,10 +8,10 @@ import ConfigParser
 import httplib
 import urllib
 import time
-from multiprocessing import current_process
+from multiprocessing import current_process, Process
 import traceback
 import threading
-
+import htmlreport
 
 reload(sys)    
 sys.setdefaultencoding('utf-8')   #修改默认编码方式，默认为ascci 
@@ -258,11 +258,10 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
     def handlePostGenerateReport(self):
         with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'report.txt'), 'a') as fd:
             fd.write("to do")
-        import htmlreport
-        from multiprocessing import Process
+
         report = htmlreport.Report()
-        #t1 = threading.Thread(target=report.run, args=())
-        t1 = Process(target=report.run, args=())
+        t1 = threading.Thread(target=report.run, args=())
+        #t1 = Process(target=report.run, args=())
         t1.start()
         
         self.sendHttpOk()    
