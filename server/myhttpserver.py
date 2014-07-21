@@ -57,6 +57,9 @@ class CaseInfo:
         self.investigator = cf.get('case', 'caseInvestigator')
         self.url = cf.get('case', 'caseUrl')
         self.myDir = os.path.join(self.location, self.name)
+        self.md5 = cf.get('case', 'md5')
+        self.sha256 = cf.get('case', 'sha256')
+        self.capturePic = cf.get('case', 'capturePic')
         
     def save(self):
         cf = ConfigParser.ConfigParser()
@@ -65,6 +68,9 @@ class CaseInfo:
         cf.set('case', 'caseLocation', self.location)
         cf.set('case', 'caseInvestigator', self.investigator)
         cf.set('case', 'caseUrl', self.url)
+        cf.set('case', 'md5', self.md5)
+        cf.set('case', 'sha256', self.sha256)
+        cf.set('case', 'capturePic', self.capturePic)
         cf.write(open(self.cfFilePath, 'w'))
         self.myDir = os.path.join(self.location, self.name)
     
@@ -151,6 +157,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         data = self.rfile.read(contentLen)
         url = paras['url'][0]
         uuid = paras['uuid'][0]
+        title = paras['title'][0]
         fileFormat = paras['fileFormat'][0]
         md5 = paras['md5'][0]
         sha256 = paras['sha256'][0]
@@ -190,7 +197,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         if(sha256 == "enable"):
             sha256Str = calcSHA256(data)
         
-        self.appendCapturedUrlRecord(uuid, url, os.path.join("./", fileDirName, fileName), md5Str, sha256Str)
+        self.appendCapturedUrlRecord(uuid, url, title, os.path.join("./", fileDirName, fileName), md5Str, sha256Str)
         
         self.sendHttpOk()
         
@@ -201,8 +208,9 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         data = self.rfile.read(contentLen)
         url = paras['url'][0]
         uuid = paras['uuid'][0]
+        title = paras['title'][0]
         
-        self.appendTryCaptureUrlRecord(uuid, url)
+        self.appendTryCaptureUrlRecord(uuid, url, title)
         self.sendHttpOk()
         
     def handleGetQuit(self):
@@ -223,7 +231,12 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
             self.server.case.location = paras['caseLocation'][0]
         if paras.has_key('caseUrl'):
             self.server.case.url =  paras['caseUrl'][0]
-        
+        if paras.has_key('md5'):
+            self.server.case.md5 =  paras['md5'][0]
+        if paras.has_key('sha256'):
+            self.server.case.sha256 =  paras['sha256'][0]
+        if paras.has_key('capturePic'):
+            self.server.case.capturePic =  paras['capturePic'][0]
         self.server.case.save()
         self.sendHttpOk()
         
@@ -245,9 +258,9 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
     def handlePostGenerateReport(self):
         with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'report.txt'), 'a') as fd:
             fd.write("to do")
-        import report
+        import htmlreport
         from multiprocessing import Process
-        report = report.Report()
+        report = htmlreport.Report()
         #t1 = threading.Thread(target=report.run, args=())
         t1 = Process(target=report.run, args=())
         t1.start()
@@ -320,21 +333,21 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
         
-    def appendCapturedUrlRecord(self, uuid, url, localMHTMLFilePath, md5, sha256):
+    def appendCapturedUrlRecord(self, uuid, url, title, localMHTMLFilePath, md5, sha256):
         print os.getcwd()
         print self.server.case.myDir
         if not os.path.isdir(self.server.case.myDir.decode('UTF-8')):
             os.makedirs(self.server.case.myDir.decode('UTF-8'))
         with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'capturedUrls.txt'), 'a') as fd:
-            fd.write(uuid + '\t' + url + '\t' + localMHTMLFilePath + '\t' + md5 + '\t' + sha256 + '\n')
+            fd.write(uuid + '\t' + url + '\t' + title + '\t' + localMHTMLFilePath + '\t' + md5 + '\t' + sha256 + '\n')
 
-    def appendTryCaptureUrlRecord(self, uuid, url):
+    def appendTryCaptureUrlRecord(self, uuid, url, title):
         print os.getcwd()
         print self.server.case.myDir
         if not os.path.isdir(self.server.case.myDir.decode('UTF-8')):
             os.makedirs(self.server.case.myDir.decode('UTF-8'))
         with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'tryCaptureUrls.txt'), 'a') as fd:
-            fd.write(uuid + '\t' + url + '\n')
+            fd.write(uuid + '\t' + url + '\t' + title + '\n')
 
 
 class MyHTTPServer(HTTPServer):

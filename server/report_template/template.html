@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{{case_name}}固定报告</title>
+<link href="css/main.css" type="text/css" rel="stylesheet" media="all" />
+</head>
+
+<body>
+	<div class="page">
+    <div class="bg_div">
+        <div class="title">{{case_name}}固定报告</div>
+        <ul class="list">
+        	<li><span>案件名：</span><span>{{case_name}}</span></li>
+        	<li><span>调查结束时间：</span><span>{{case_end_time}}</span></li>
+        	<li><span>调查员：</span><span>{{case_investigator}}</span></li>
+            <li><span>用户名：</span><span>{{case_user}}</span></li>
+        	<li><span>固定网址：</span><span>{{case_urls}}</span></li>
+        	<li><span>密码：</span><span>{{case_passwd}}</span></li>
+        	<li><span>调查开始时间：</span><span>{{case_start_time}}</span></li>
+        </ul>
+        <ul class="list">
+       	  <li class="list_tit"><span>参数设置：</span></li>
+        	<li><span>MD5：</span><span>{{md5}}</span></li>
+        	<li><span>屏幕录像：</span><span>否</span></li>
+            <li><span>SHA256：</span><span>{{sha256}}</span></li>
+        	<li><span>保存位置：</span><span>{{case_location}}</span></li>
+        	<li><span>截图：</span><span>是</span></li>
+        	<li><span>固定数据总大小：</span><span>xxxxx</span></li>
+        </ul>
+        
+        <div class="list">
+        	<b>固定结果：</b>
+            <table class="result_table"  cellspacing="0" cellpadding="0">
+            <thead>
+              <tr>
+                <td>序号</td>
+                <td>标题</td>
+                <td>原始URL</td>
+                <td>固定结果</td>
+                <td>截图</td>
+                <td>HASH</td>
+              </tr>
+           </thead>   
+           
+           <tbody>
+             {% for url in urls %}
+                <tr>
+                    <td>{{ url.id|e }}</td>
+                    <td>{{ url.title|e }}</td>
+                    <td>{{ url.url|e }}</td>
+                    <td>{{ url.result|e }}</td>
+                    <td>{{ url.png|e }}</td>
+                    <td>{{ url.md5|e }}</td>
+                </tr>
+             {% endfor %}
+              <tr>
+                <td>统计</td>
+                <td colspan="5"><div align="right">总⻚页⾯面：{{total_url}}个，成功：{{total_success_url}}个，失败{{total_fail_url}}个</div></td>
+              </tr>
+              
+              </tbody>
+            </table>
+        </div>
+        
+        <ul class="right_ul">
+        	<li><span>调查员：</span><span style="text-decoration:underline">{{case_investigator}}</span></li>
+            <li><span>日期：</span><span>{{case_end_time}}</span></li>
+        </ul>
+</div>
+</div>
+</body>
+</html>

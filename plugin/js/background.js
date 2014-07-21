@@ -387,6 +387,15 @@ function sendCaseInfoToBackServer(caseInfo) {
         if(caseInfo.caseLocation) {
             data['caseLocation'] = caseInfo.caseLocation;
         }
+        if(caseInfo.md5) {
+            data['md5'] = caseInfo.md5;        
+        }
+        if(caseInfo.sha256) {
+            data['sha256'] = caseInfo.sha256;        
+        }
+        if(caseInfo.capturePic) {
+            data['capturePic'] = caseInfo.capturePic;        
+        }
         
         query = EncodeQueryData(data);
         $.ajax({

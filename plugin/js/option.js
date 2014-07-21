@@ -187,6 +187,23 @@ function saveButtonOnClick(e) {
         'caseInvestigator': document.getElementById("caseInvestigatorText").value,
         'caseUrl': document.getElementById("caseUrlText").value,
         'caseLocation': document.getElementById("caseLocationText").value};
+    if(document.getElementById("md5Checkbox").checked) {
+        caseInfo["md5"] = true;
+    } else {
+        caseInfo["md5"] = false;
+    }
+    
+    if(document.getElementById("sha256Checkbox").checked) {
+        caseInfo["sha256"] = true;
+    } else {
+        caseInfo["sha256"] = false;
+    }
+    
+    if(document.getElementById("capturePicCheckbox").checked) {
+        caseInfo["capturePic"] = true;
+    } else {
+        caseInfo["capturePic"] = false;
+    }
         
     var bgp = chrome.extension.getBackgroundPage();
     bgp.sendCaseInfoToBackServer(caseInfo);
