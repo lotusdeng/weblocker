@@ -50,7 +50,7 @@
                     <td>{{ url.title|e }}</td>
                     <td>{{ url.url|e }}</td>
                     <td>{{ url.result|e }}</td>
-                    <td>{{ url.png|e }}</td>
+                    <td><a href="{{ url.pnglink|e }}">{{ url.png|e }}</a></td>
                     <td>{{ url.md5|e }}</td>
                 </tr>
              {% endfor %}

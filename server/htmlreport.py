@@ -165,6 +165,8 @@ class Report():
                 item = captureUrls[uuid]
                 item["id"] = id
                 item["result"] = "成功"
+                item["png"] = os.path.basename(item["png"])
+                item["pnglink"] = os.path.join("../截图", item["png"])
                 urls.append(item)
                 success_url_num += 1
             else:
@@ -172,6 +174,7 @@ class Report():
                 item["id"] = id
                 item["result"] = "失败"
                 item["png"] = " "
+                item["pnglink"] = " "
                 item["md5"] = " "
                 urls.append(item)
                 pass
