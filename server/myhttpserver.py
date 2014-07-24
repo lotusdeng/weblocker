@@ -8,6 +8,7 @@ import ConfigParser
 import httplib
 import urllib
 import time
+import multiprocessing
 from multiprocessing import current_process, Process
 import traceback
 import threading
@@ -60,6 +61,8 @@ class CaseInfo:
         self.md5 = cf.get('case', 'md5')
         self.sha256 = cf.get('case', 'sha256')
         self.capturePic = cf.get('case', 'capturePic')
+        self.startTime = cf.get('case', 'startTime')
+        self.endTime = cf.get('case', 'endTime')
         
     def save(self):
         cf = ConfigParser.ConfigParser()
@@ -71,6 +74,8 @@ class CaseInfo:
         cf.set('case', 'md5', self.md5)
         cf.set('case', 'sha256', self.sha256)
         cf.set('case', 'capturePic', self.capturePic)
+        cf.set('case', 'startTime', self.startTime)
+        cf.set('case', 'endTime', self.endTime)
         cf.write(open(self.cfFilePath, 'w'))
         self.myDir = os.path.join(self.location, self.name)
     
@@ -96,6 +101,10 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
                 self.handlePostSetCaseInfo()
             elif(uriPath == "/generateReport"):
                 self.handlePostGenerateReport()
+            elif(uriPath == "/caseStart"):
+                self.handlePostCaseStart()
+            elif(uriPath == "/caseEnd"):
+                self.handlePostCaseEnd()
             else:
                 self.sendHttpFail("unknown uri:" + uriPath)
             
@@ -166,9 +175,9 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         tmpFileName = fileName
         fileDirName = ""
         if(fileFormat == "mhtml"):
-            fileDirName = "mhtml"
+            fileDirName = "网页源文件"
         elif(fileFormat == "png" or fileFormat == "jpeg"):
-            fileDirName = "picture"
+            fileDirName = "截图"
         fileDirPath = os.path.join(self.server.case.myDir, fileDirName)
         #print "myDir:" + self.server.case.myDir.decode('UTF-8')
         if(not os.path.isdir(fileDirPath.decode('UTF-8'))):
@@ -256,15 +265,30 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
 
         
     def handlePostGenerateReport(self):
-        with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'report.txt'), 'a') as fd:
-            fd.write("to do")
+        #with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'report.txt'), 'a') as fd:
+        #    fd.write("to do")
 
         report = htmlreport.Report()
+        #report.run()
         t1 = threading.Thread(target=report.run, args=())
+        #os.system("htmlreport.exe")
+    
         #t1 = Process(target=report.run, args=())
         t1.start()
         
-        self.sendHttpOk()    
+        self.sendHttpOk()
+        
+    def handlePostCaseStart(self):
+        self.server.case.startTime = time.strftime('%Y-%m-%d %H:%M',time.localtime(time.time()))
+        self.server.case.save()
+        self.sendHttpOk()
+        pass
+    
+    def handlePostCaseEnd(self):
+        self.server.case.endTime = time.strftime('%Y-%m-%d %H:%M',time.localtime(time.time()))
+        self.server.case.save()
+        self.sendHttpOk()
+        pass
     
     def handleGetFileList(self):
         self.send_response(200)
@@ -337,7 +361,9 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         print self.server.case.myDir
         if not os.path.isdir(self.server.case.myDir.decode('UTF-8')):
             os.makedirs(self.server.case.myDir.decode('UTF-8'))
-        with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'capturedUrls.txt'), 'a') as fd:
+        captureUrls = os.path.join(self.server.case.myDir, '抓取的网址.txt')
+        captureUrls = captureUrls.decode('UTF-8')
+        with open(captureUrls, 'a') as fd:
             fd.write(uuid + '\t' + url + '\t' + title + '\t' + localMHTMLFilePath + '\t' + md5 + '\t' + sha256 + '\n')
 
     def appendTryCaptureUrlRecord(self, uuid, url, title):
@@ -345,7 +371,9 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         print self.server.case.myDir
         if not os.path.isdir(self.server.case.myDir.decode('UTF-8')):
             os.makedirs(self.server.case.myDir.decode('UTF-8'))
-        with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'tryCaptureUrls.txt'), 'a') as fd:
+        tryCaptureUrls = os.path.join(self.server.case.myDir, '点击的网址.txt')
+        tryCaptureUrls = tryCaptureUrls.decode('UTF-8')
+        with open(tryCaptureUrls, 'a') as fd:
             fd.write(uuid + '\t' + url + '\t' + title + '\n')
 
 
