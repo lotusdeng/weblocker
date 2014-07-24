@@ -38,6 +38,7 @@
                 <td>标题</td>
                 <td>原始URL</td>
                 <td>固定结果</td>
+                <td>文件</td>
                 <td>截图</td>
                 <td>HASH</td>
               </tr>
@@ -50,6 +51,7 @@
                     <td>{{ url.title|e }}</td>
                     <td>{{ url.url|e }}</td>
                     <td>{{ url.result|e }}</td>
+                    <td><a href="{{ url.mhtmllink|e }}">{{ url.mhtml|e }}</a></td>
                     <td><a href="{{ url.pnglink|e }}">{{ url.png|e }}</a></td>
                     <td>{{ url.md5|e }}</td>
                 </tr>

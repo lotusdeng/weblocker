@@ -165,8 +165,18 @@ class Report():
                 item = captureUrls[uuid]
                 item["id"] = id
                 item["result"] = "成功"
-                item["png"] = os.path.basename(item["png"])
-                item["pnglink"] = os.path.join("../截图", item["png"])
+                if item.has_key("png"):
+                    item["png"] = os.path.basename(item["png"])
+                    item["pnglink"] = os.path.join("../截图", item["png"])
+                else:
+                    item["png"] = ""
+                    item["png"] = ""
+                if item.has_key("mhtml"):
+                    item["mhtml"] = os.path.basename(item["mhtml"])
+                    item["mhtmllink"] = os.path.join("../截图", item["mhtml"])
+                else:
+                    item["mhtml"] = ""
+                    item["mhtmllink"] = ""
                 urls.append(item)
                 success_url_num += 1
             else:
@@ -176,6 +186,8 @@ class Report():
                 item["png"] = " "
                 item["pnglink"] = " "
                 item["md5"] = " "
+                item["mhtml"] = ""
+                item["mhtmllink"] = ""
                 urls.append(item)
                 pass
             id += 1
