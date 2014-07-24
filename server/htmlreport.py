@@ -16,14 +16,13 @@ sys.setdefaultencoding("utf-8")
 
          
 class Report():
-    def __init__(self):
+    def __init__(self, caseIni):
         """Constructor"""
         cf = ConfigParser()
-        tmp = os.path.abspath(sys.argv[0])
-        tmp = os.path.dirname(tmp)
-        tmp = os.path.join(tmp, "case.ini")
+        print "Report start"
+        print "case.ini: " + caseIni
         
-        cf.read(tmp)
+        cf.read(caseIni)
         self.caseLocation = cf.get('case', 'caseLocation')
         self.caseName = cf.get('case', 'caseName')
         self.caseUrl = cf.get('case', 'caseUrl')
@@ -183,6 +182,9 @@ class Report():
             print msg   
 
 if __name__ == "__main__":
-    r = Report()
+    tmp = os.path.abspath(sys.argv[0])
+    tmp = os.path.dirname(tmp)
+    tmp = os.path.join(tmp, "case.ini")
+    r = Report(tmp)
     r.run()
 

@@ -64,7 +64,7 @@ class CaseInfo:
         self.startTime = cf.get('case', 'startTime')
         self.endTime = cf.get('case', 'endTime')
         if self.location == "":
-            self.location = os.path.expanduser('~')
+            self.location = os.path.join(os.path.expanduser('~'), "My Documents/WebLocker")
             self.save()
         
     def save(self):
@@ -271,7 +271,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         #with open(os.path.join(self.server.case.myDir.decode('UTF-8'), 'report.txt'), 'a') as fd:
         #    fd.write("to do")
 
-        report = htmlreport.Report()
+        report = htmlreport.Report(self.server.caseIni)
         #report.run()
         t1 = threading.Thread(target=report.run, args=())
         #os.system("htmlreport.exe")
@@ -389,11 +389,20 @@ class MyHTTPServer(HTTPServer):
         #dirpath = os.path.abspath(os.path.dirname(this_file))
         #caseIniFilePath = os.path.join(dirpath, "case.ini")
         #print caseIniFilePath
-        tmp = os.path.abspath(sys.argv[0])
-        tmp = os.path.dirname(tmp)
-        tmp = os.path.join(tmp, "case.ini")
-        log("case.ini:" + tmp)
-        self.case = CaseInfo(tmp)
+        tmp = ""
+        if sys.platform == "win32":
+            self.caseIni = os.path.join(os.path.expanduser('~'), "My Documents/WebLocker/case.ini")
+            if not os.path.exists(self.caseIni):
+                tmp = os.path.abspath(sys.argv[0])
+                tmp = os.path.dirname(tmp)
+                self.caseIni = os.path.join(tmp, "case.ini")
+        else:
+            tmp = os.path.abspath(sys.argv[0])
+            tmp = os.path.dirname(tmp)
+            self.caseIni = os.path.join(tmp, "case.ini")
+        
+        log("case.ini:" + self.caseIni)
+        self.case = CaseInfo(self.caseIni)
         self.case.load()
         self.currentUse = 0
         self.maxUse = 2

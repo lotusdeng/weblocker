@@ -5,9 +5,9 @@
 !define PRODUCT_VERSION "1.0"
 !define PRODUCT_PUBLISHER "My company, Inc."
 !define PRODUCT_WEB_SITE "http://www.mycompany.com"
-!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\WebLocker"
-!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
-!define PRODUCT_UNINST_ROOT_KEY "HKLM"
+;!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\WebLocker"
+;!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+;!define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -22,8 +22,8 @@
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\server\backserver.exe"
-!insertmacro MUI_PAGE_FINISH
+;!define MUI_FINISHPAGE_RUN "$INSTDIR\server\backserver.exe"
+;!insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
 !insertmacro MUI_UNPAGE_INSTFILES
@@ -36,7 +36,7 @@
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "Setup.exe"
 InstallDir "C:\WebLocker"
-InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
+;InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
@@ -237,9 +237,10 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR\server"
   File "dist\server\backserver.exe"
   CreateShortCut "$DESKTOP\WebLocker.lnk" "$INSTDIR\server\backserver.exe" "" "$INSTDIR\server\weblocker.ico"
+  File "dist\server\htmlreport.exe"
+  File "dist\server\myhttpserver.exe"
   File "dist\server\bz2.pyd"
   File "dist\server\library.zip"
-  File "dist\server\myhttpserver.lock"
   File "dist\server\PIL._imaging.pyd"
   File "dist\server\pyexpat.pyd"
   File "dist\server\python27.dll"
@@ -258,8 +259,13 @@ Section "MainSection" SEC01
   File "dist\server\_ssl.pyd"
   File "dist\server\_win32sysloader.pyd"
   File "dist\server\weblocker.ico"
-  File "dist\server\case.ini"
   File "dist\server\msyh.ttf"
+  SetOutPath "$INSTDIR\server\report_template"
+  File "dist\server\report_template\template.html"
+  SetOutPath "$INSTDIR\server\report_template\css"
+  File "dist\server\report_template\css\main.css"
+  SetOutPath "$DOCUMENTS\WebLocker"
+  File "dist\server\case.ini"
 SectionEnd
 
 Section -AdditionalIcons
@@ -272,13 +278,13 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\server\backserver.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\server\backserver.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  ;WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\server\backserver.exe"
+  ;WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
+  ;WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
+  ;WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\server\backserver.exe"
+  ;WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  ;WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  ;WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
 
 
@@ -295,6 +301,10 @@ FunctionEnd
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
+  Delete "$INSTDIR\server\report_template\css\main.css"
+  RMDir "$INSTDIR\server\report_template\css"
+  Delete "$INSTDIR\server\report_template\template.html"
+  RMDir "$INSTDIR\server\report_template"
   Delete "$INSTDIR\server\_win32sysloader.pyd"
   Delete "$INSTDIR\server\_ssl.pyd"
   Delete "$INSTDIR\server\_socket.pyd"
@@ -312,12 +322,12 @@ Section Uninstall
   Delete "$INSTDIR\server\python27.dll"
   Delete "$INSTDIR\server\pyexpat.pyd"
   Delete "$INSTDIR\server\PIL._imaging.pyd"
-  Delete "$INSTDIR\server\myhttpserver.lock"
   Delete "$INSTDIR\server\library.zip"
   Delete "$INSTDIR\server\bz2.pyd"
   Delete "$INSTDIR\server\backserver.exe"
+  Delete "$INSTDIR\server\htmlreport.exe"
+  Delete "$INSTDIR\server\myhttpserver.exe"
   Delete "$INSTDIR\server\weblocker.ico"
-  Delete "$INSTDIR\server\case.ini"
   Delete "$INSTDIR\server\msyh.ttf"
   Delete "$INSTDIR\browser\shortcurt.txt"
   Delete "$INSTDIR\browser\First Run"
@@ -506,7 +516,7 @@ Section Uninstall
   RMDir "$INSTDIR\browser\34.0.1847.137"
   RMDir "$INSTDIR\browser"
 
-  DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
-  DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+  ;DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+  ;DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
 SectionEnd

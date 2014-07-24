@@ -47,7 +47,8 @@ def hide_console():
         pass
      
 def start_one_instance_httpserver():
-    fd = open("myhttpserver.lock", "w")
+    lockFile = os.path.join(os.path.expanduser('~'), "My Documents/WebLocker", "myhttpserver.lock")
+    fd = open(lockFile, "w")
     lock(fd, LOCK_EX | LOCK_NB) 
    
     http_server = myhttpserver.MyHTTPServer(('127.0.0.1', 8080), myhttpserver.MyHTTPHandle)
