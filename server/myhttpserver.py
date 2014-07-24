@@ -63,6 +63,9 @@ class CaseInfo:
         self.capturePic = cf.get('case', 'capturePic')
         self.startTime = cf.get('case', 'startTime')
         self.endTime = cf.get('case', 'endTime')
+        if self.location == "":
+            self.location = os.path.expanduser('~')
+            self.save()
         
     def save(self):
         cf = ConfigParser.ConfigParser()
