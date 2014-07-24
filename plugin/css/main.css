@@ -34,5 +34,8 @@ margin-right: 5px;}
 .save_btn{ margin:16px 0 30px 34px;}
 
 .printscreen{ padding-top:28px;}
-
+.page_main .company_message{ padding-top:0;}
+.page_main .company_message span{line-height: 22px;
+font-size: 13px;
+color: #969696;}
 input[type="button"]{padding: 5px 15px;}
