@@ -13,18 +13,6 @@ import inspect
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-class StreamToLogger(object):
-   """
-   Fake file-like stream object that redirects writes to a logger instance.
-   """
-   def __init__(self, logger, log_level=logging.INFO):
-      self.logger = logger
-      self.log_level = log_level
-      self.linebuf = ''
- 
-   def write(self, buf):
-      for line in buf.rstrip().splitlines():
-         self.logger.log(self.log_level, line.rstrip())
 
          
 class Report():
@@ -34,9 +22,6 @@ class Report():
         tmp = os.path.abspath(sys.argv[0])
         tmp = os.path.dirname(tmp)
         tmp = os.path.join(tmp, "case.ini")
-        self.logger, self.handler = self._getLogger()
-        
-        self.logger.info("case.init: " + tmp)
         
         cf.read(tmp)
         self.caseLocation = cf.get('case', 'caseLocation')
@@ -48,29 +33,6 @@ class Report():
         self.capturePic = cf.get('case', 'capturePic')
         self.caseStartTime = cf.get('case', 'startTime')
         self.caseEndTime = cf.get('case', 'endTime')
-        
-    def _getLogger(self):
-       
-        logger = logging.getLogger('htmlreport')
-        
-        this_file = inspect.getfile(inspect.currentframe())  
-        dirpath = os.path.abspath(os.path.dirname(this_file))
-        logFilePath = os.path.join(dirpath, "htmlreport.log")
-        print "log to " + logFilePath
-        handler = logging.FileHandler(logFilePath)  
-          
-        formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')  
-        handler.setFormatter(formatter)  
-          
-        logger.addHandler(handler)
-        
-        #sl = StreamToLogger(logger, logging.INFO)
-        #sys.stdout = sl
-        #sys.stderr = sl
-        
-        logger.setLevel(logging.INFO)  
-          
-        return logger, handler
     
     def get_urls(self):
         tryCaptureUrlsFile = os.path.join(self.caseLocation, self.caseName, "点击的网址.txt")
@@ -152,7 +114,7 @@ class Report():
             for f in filenames:
                 fp = os.path.join(dirpath, f)
                 total_size += os.path.getsize(fp)
-        total_size = total_size / 1024 / 1024
+        total_size = total_size * 1.0 / 1024 / 1024
         data['case_size'] = str(total_size) + "M"
 
         urls = []
@@ -173,7 +135,7 @@ class Report():
                     item["png"] = ""
                 if item.has_key("mhtml"):
                     item["mhtml"] = os.path.basename(item["mhtml"])
-                    item["mhtmllink"] = os.path.join("../截图", item["mhtml"])
+                    item["mhtmllink"] = os.path.join("../网页源文件", item["mhtml"])
                 else:
                     item["mhtml"] = ""
                     item["mhtmllink"] = ""
@@ -201,7 +163,6 @@ class Report():
     def run(self):
 	try:
             print "Report.run start"
-            self.logger.info("htmlreport start")
             css_path = os.path.join(self.caseLocation, self.caseName, "报告/css")
             css_path = css_path.decode('UTF-8')
             if not os.path.exists(css_path):
@@ -219,7 +180,7 @@ class Report():
             fp = StringIO.StringIO()    #创建内存文件对象
             traceback.print_exc(file=fp)
             msg = fp.getvalue()
-            self.logger.warn(msg)   
+            print msg   
 
 if __name__ == "__main__":
     r = Report()

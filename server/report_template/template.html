@@ -36,7 +36,6 @@
               <tr>
                 <td>序号</td>
                 <td>标题</td>
-                <td>原始URL</td>
                 <td>固定结果</td>
                 <td>文件</td>
                 <td>截图</td>
@@ -48,8 +47,7 @@
              {% for url in urls %}
                 <tr>
                     <td>{{ url.id|e }}</td>
-                    <td>{{ url.title|e }}</td>
-                    <td>{{ url.url|e }}</td>
+                    <td title="{{ url.url|e }}">{{ url.title|e }}</td>
                     <td>{{ url.result|e }}</td>
                     <td><a href="{{ url.mhtmllink|e }}">{{ url.mhtml|e }}</a></td>
                     <td><a href="{{ url.pnglink|e }}">{{ url.png|e }}</a></td>
@@ -58,7 +56,7 @@
              {% endfor %}
               <tr>
                 <td>统计</td>
-                <td colspan="5"><div align="right">总⻚面：{{total_url}}个，成功：{{total_success_url}}个，失败{{total_fail_url}}个</div></td>
+                <td colspan="5"><div align="right">总页面：{{total_url}}个，成功：{{total_success_url}}个，失败{{total_fail_url}}个</div></td>
               </tr>
               
               </tbody>
