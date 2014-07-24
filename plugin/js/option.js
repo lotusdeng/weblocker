@@ -68,8 +68,8 @@ function initCapturePicCheckbox() {
 }
 
 function initCaseLocationButton() {
-    var pluginStateButton = document.getElementById("caseLocationButton");
-    pluginStateButton.addEventListener("click", caseLocationButtonOnClick, true);
+    //var pluginStateButton = document.getElementById("caseLocationButton");
+    //pluginStateButton.addEventListener("click", caseLocationButtonOnClick, true);
 }
 function caseLocationButtonOnClick() {
     try {
