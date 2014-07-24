@@ -94,6 +94,20 @@ function pluginStateButtonOnClick(e) {
             var bgp = chrome.extension.getBackgroundPage();
             bgp.sendMessageToOtherPlugin("disable", caseUrl);
             
+			//send start case info to backserver
+			$.ajax({
+            url: "http://127.0.0.1:8080/caseEnd",
+            cache: false,
+            type: "post", 
+            timeout: 1000
+			}).done(function(msg) {
+				
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				alert("GET http://127.0.0.1:8080/caseEnd fail, reason:" + 
+				' (errorThrow:' + errorThrown + "|textStatus:" + textStatus + ")"
+				+ ", please restart WebLockerService");
+			});
+			
             if(confirm("生成报告")) {
                 var bgp = chrome.extension.getBackgroundPage();
                 bgp.sendGenerateReportToBackServer();
@@ -121,6 +135,20 @@ function pluginStateButtonOnClick(e) {
             chrome.browserAction.setBadgeText({text: "ON"}); 
             
             chrome.storage.local.set({"caseUrl": document.getElementById("caseUrlText").value}, function(){});  
+			
+			//send start case info to backserver
+			$.ajax({
+            url: "http://127.0.0.1:8080/caseStart",
+            cache: false,
+            type: "post", 
+            timeout: 1000
+			}).done(function(msg) {
+				
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				alert("GET http://127.0.0.1:8080/caseStart fail, reason:" + 
+				' (errorThrow:' + errorThrown + "|textStatus:" + textStatus + ")"
+				+ ", please restart WebLockerService");
+			});
         }
     });  
 }
