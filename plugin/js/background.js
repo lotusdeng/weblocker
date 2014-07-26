@@ -49,7 +49,16 @@ function tabUpdateListener(tabId, info) {
                             return;
                         }
                     }
-                    MoveWindowScrollToBottom(tab, doCaptureThisUrl);
+                    chrome.storage.local.get("autoScroll", function callback(result){
+						if(result.autoScroll && result.autoScroll == "enable") {
+							//alert("autoScroll:" + result.autoScroll);
+							MoveWindowScrollToBottom(tab, doCaptureThisUrl);
+						} else {
+							//alert("not autoScroll");
+							doCaptureThisUrl(tab);
+						}
+					});
+					
                     
                 }
             });
@@ -332,12 +341,12 @@ function doCaptureThisUrl(tab) {
    
     saveTabAsMHTML(tab); 
     
-    chrome.storage.local.get('capturePic', function(result) {
-        if(result.capturePic.length != 0 && result.capturePic == "enable") {
-            //alert("saveTabPageAsPicture");
-            saveTabPageAsPicture(tab);                    
-        }         
-    });  
+    //chrome.storage.local.get('capturePic', function(result) {
+    //    if(result.capturePic.length != 0 && result.capturePic == "enable") {
+    //        //alert("saveTabPageAsPicture");
+    //        saveTabPageAsPicture(tab);                    
+    //    }         
+    //});  
 }
 
 function tryCaptureThisUrl(tab) {

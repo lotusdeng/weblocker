@@ -210,7 +210,11 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
             sha256Str = calcSHA256(data)
         
         self.appendCapturedUrlRecord(uuid, url, title, os.path.join("./", fileDirName, fileName), md5Str, sha256Str)
-        
+
+        if self.server.case.capturePic == "true":
+            #self.generatePng(uuid, url, title, filePath)
+            t1 = threading.Thread(target=self.generatePng, args=(uuid, url, title, filePath))
+            t1.start()
         self.sendHttpOk()
         
     def handlPostTryCaptureUrl(self):
@@ -379,6 +383,38 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         with open(tryCaptureUrls, 'a') as fd:
             fd.write(uuid + '\t' + url + '\t' + title + '\n')
 
+    
+    def generatePng(self, uuid, url, title, mhtmlFilePath):
+        dirName = os.path.dirname(mhtmlFilePath)
+        dirName = os.path.join(dirName, "../截图")
+        
+        baseName = os.path.basename(mhtmlFilePath)
+        
+        if(not os.path.isdir(dirName.decode('UTF-8'))):
+            os.makedirs(dirName.decode('UTF-8'))
+            
+        
+        pngFilePath = os.path.join(dirName, baseName+".png")
+        tmp = os.path.abspath(sys.argv[0])
+        tmp = os.path.dirname(tmp)
+        cuty = os.path.join(tmp, "../CutyCapt/CutyCapt.exe")
+        cmd = "{0} --url=file:///{1} --out={2}".format(cuty, mhtmlFilePath, pngFilePath)
+        print cmd
+        print time.time()
+        os.popen(cmd)
+        print time.time()
+        
+        with open(pngFilePath.decode("UTF-8"), "rb") as fd:
+            data = fd.read()
+            md5Str = "md5"
+            if(self.server.case.md5 == "true"):
+                 md5Str = calcMD5(data)
+            sha256Str = "sha256"
+            if(self.server.case.sha256 == "true"):
+                sha256Str = calcSHA256(data)
+            
+        self.appendCapturedUrlRecord(uuid, url, title, pngFilePath, md5Str, sha256Str)
+        pass
 
 class MyHTTPServer(HTTPServer):
     def __init__(self, server_address, RequestHandlerClass):

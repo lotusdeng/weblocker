@@ -67,6 +67,17 @@ function initCapturePicCheckbox() {
     });
 }
 
+function initAutoScrollCheckbox() {
+    var autoScrollCheckbox = document.getElementById("autoScrollCheckbox");
+    autoScrollCheckbox.checked = false;
+    chrome.storage.local.get("autoScroll", function(result){
+        if(result.autoScroll == "enable") {
+            autoScrollCheckbox.checked = true;
+        }
+    });
+}
+
+
 function initCaseLocationButton() {
     //var pluginStateButton = document.getElementById("caseLocationButton");
     //pluginStateButton.addEventListener("click", caseLocationButtonOnClick, true);
@@ -138,6 +149,7 @@ function init() {
         initMd5Checkbox();
         initSha256Checkbox();
         initCapturePicCheckbox();
+		initAutoScrollCheckbox();
     } catch(err) {
     	alert("init throw a exception:" + err);
     }
@@ -180,6 +192,12 @@ function saveButtonOnClick(e) {
         chrome.storage.local.set({"capturePic":"enable"}, function(){});
     } else {
         chrome.storage.local.set({"capturePic":"disable"}, function(){});
+    }
+	
+	if(document.getElementById("autoScrollCheckbox").checked) {
+        chrome.storage.local.set({"autoScroll":"enable"}, function(){});
+    } else {
+        chrome.storage.local.set({"autoScroll":"disable"}, function(){});
     }
     
     
