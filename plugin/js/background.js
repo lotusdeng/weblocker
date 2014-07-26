@@ -228,7 +228,7 @@ function sendFileToBackServer(query, blob) {
             type: "POST",
             data: blob, 
 	   		processData: false,
-            timeout: 1000
+            timeout: 5000
         }).done(function(msg) {
             if(msg.error){
             } else {
@@ -360,7 +360,7 @@ function tryCaptureThisUrl(tab) {
                 type: "POST",
                 data: "test", 
                 processData: false,
-                timeout: 1000
+                timeout: 5000
         }).done(function(msg) {
                 if(msg.error){
                 } else {
@@ -413,7 +413,7 @@ function sendCaseInfoToBackServer(caseInfo) {
                 type: "POST",
                 data: "test", 
                 processData: false,
-                timeout: 1000
+                timeout: 5000
         }).done(function(msg) {
                 if(msg.error){
                 } else {
