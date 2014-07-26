@@ -13,35 +13,15 @@ from multiprocessing import current_process, Process
 import traceback
 import threading
 import htmlreport
+import shutil
+from mylog import *
+from processmhtml import *
 
 reload(sys)    
 sys.setdefaultencoding('utf-8')   #修改默认编码方式，默认为ascci 
 
-logs = []
-
-def log(msg):
-    print msg
-    global logs
-    logs.append(str(msg))
-    if len(logs) > 1000:
-        clear_log()
-        
-
-def clear_log():
-    global logs
-    logs[:] = []
 
 
-
-def calcMD5(stream):
-    md5Obj = hashlib.md5()
-    md5Obj.update(stream)
-    return md5Obj.hexdigest()
-
-def calcSHA256(stream):
-    sha256Obj = hashlib.sha256()
-    sha256Obj.update(stream)
-    return sha256Obj.hexdigest()
 
 class CaseInfo:
     def __init__(self, cfFilePath):
@@ -64,7 +44,7 @@ class CaseInfo:
         self.startTime = cf.get('case', 'startTime')
         self.endTime = cf.get('case', 'endTime')
         if self.location == "":
-            self.location = os.path.join(os.path.expanduser('~'), "My Documents/WebLocker")
+            self.location = os.path.join(os.path.expanduser('~'), "WebLocker")
             self.save()
         
     def save(self):
@@ -199,22 +179,12 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         print 'save as ', fileName
 
         filePath = os.path.join(fileDirPath, fileName)
-        with open(filePath.decode('UTF-8'), 'wb') as fd:
-            fd.write(data)
-
-        md5Str = "md5"
-        if(md5 == "enable"):
-             md5Str = calcMD5(data)
-        sha256Str = "sha256"
-        if(sha256 == "enable"):
-            sha256Str = calcSHA256(data)
         
-        self.appendCapturedUrlRecord(uuid, url, title, os.path.join("./", fileDirName, fileName), md5Str, sha256Str)
-
-        if self.server.case.capturePic == "true":
-            #self.generatePng(uuid, url, title, filePath)
-            t1 = threading.Thread(target=self.generatePng, args=(uuid, url, title, filePath))
-            t1.start()
+        t1 = Process(target=ProcessSaveMhtml, args=(uuid, url, title, data, md5, sha256, filePath,
+                                                    fileDirName, fileName, self.server.case.capturePic
+                                                    , self.server.case.myDir
+                                                    ))
+        t1.start()
         self.sendHttpOk()
         
     def handlPostTryCaptureUrl(self):
@@ -226,7 +196,7 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         uuid = paras['uuid'][0]
         title = paras['title'][0]
         
-        self.appendTryCaptureUrlRecord(uuid, url, title)
+        appendTryCaptureUrlRecord(uuid, url, title, self.server.case.myDir)
         self.sendHttpOk()
         
     def handleGetQuit(self):
@@ -277,10 +247,10 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
 
         report = htmlreport.Report(self.server.caseIni)
         #report.run()
-        t1 = threading.Thread(target=report.run, args=())
+        #t1 = threading.Thread(target=report.run, args=())
         #os.system("htmlreport.exe")
     
-        #t1 = Process(target=report.run, args=())
+        t1 = Process(target=report.run, args=())
         t1.start()
         
         self.sendHttpOk()
@@ -363,58 +333,9 @@ class MyHTTPHandle(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
         
-    def appendCapturedUrlRecord(self, uuid, url, title, localMHTMLFilePath, md5, sha256):
-        print os.getcwd()
-        print self.server.case.myDir
-        if not os.path.isdir(self.server.case.myDir.decode('UTF-8')):
-            os.makedirs(self.server.case.myDir.decode('UTF-8'))
-        captureUrls = os.path.join(self.server.case.myDir, '抓取的网址.txt')
-        captureUrls = captureUrls.decode('UTF-8')
-        with open(captureUrls, 'a') as fd:
-            fd.write(uuid + '\t' + url + '\t' + title + '\t' + localMHTMLFilePath + '\t' + md5 + '\t' + sha256 + '\n')
-
-    def appendTryCaptureUrlRecord(self, uuid, url, title):
-        print os.getcwd()
-        print self.server.case.myDir
-        if not os.path.isdir(self.server.case.myDir.decode('UTF-8')):
-            os.makedirs(self.server.case.myDir.decode('UTF-8'))
-        tryCaptureUrls = os.path.join(self.server.case.myDir, '点击的网址.txt')
-        tryCaptureUrls = tryCaptureUrls.decode('UTF-8')
-        with open(tryCaptureUrls, 'a') as fd:
-            fd.write(uuid + '\t' + url + '\t' + title + '\n')
 
     
-    def generatePng(self, uuid, url, title, mhtmlFilePath):
-        dirName = os.path.dirname(mhtmlFilePath)
-        dirName = os.path.join(dirName, "../截图")
-        
-        baseName = os.path.basename(mhtmlFilePath)
-        
-        if(not os.path.isdir(dirName.decode('UTF-8'))):
-            os.makedirs(dirName.decode('UTF-8'))
-            
-        
-        pngFilePath = os.path.join(dirName, baseName+".png")
-        tmp = os.path.abspath(sys.argv[0])
-        tmp = os.path.dirname(tmp)
-        cuty = os.path.join(tmp, "../CutyCapt/CutyCapt.exe")
-        cmd = "{0} --url=file:///{1} --out={2}".format(cuty, mhtmlFilePath, pngFilePath)
-        print cmd
-        print time.time()
-        os.popen(cmd)
-        print time.time()
-        
-        with open(pngFilePath.decode("UTF-8"), "rb") as fd:
-            data = fd.read()
-            md5Str = "md5"
-            if(self.server.case.md5 == "true"):
-                 md5Str = calcMD5(data)
-            sha256Str = "sha256"
-            if(self.server.case.sha256 == "true"):
-                sha256Str = calcSHA256(data)
-            
-        self.appendCapturedUrlRecord(uuid, url, title, pngFilePath, md5Str, sha256Str)
-        pass
+    
 
 class MyHTTPServer(HTTPServer):
     def __init__(self, server_address, RequestHandlerClass):
@@ -427,7 +348,7 @@ class MyHTTPServer(HTTPServer):
         #print caseIniFilePath
         tmp = ""
         if sys.platform == "win32":
-            self.caseIni = os.path.join(os.path.expanduser('~'), "My Documents/WebLocker/case.ini")
+            self.caseIni = os.path.join(os.path.expanduser('~'), "WebLocker/case.ini")
             if not os.path.exists(self.caseIni):
                 tmp = os.path.abspath(sys.argv[0])
                 tmp = os.path.dirname(tmp)
@@ -469,6 +390,7 @@ class MyHTTPServer(HTTPServer):
         print "HttpServer stop exit"
 
 if __name__ == '__main__':
+    multiprocessing .freeze_support()
     try:
         http_server = MyHTTPServer(('127.0.0.1', 8080), MyHTTPHandle)
         http_server.start()

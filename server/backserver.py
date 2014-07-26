@@ -10,6 +10,7 @@ import win32api
 import threading
 import time
 import traceback
+import multiprocessing
 
 #import ctypes
 
@@ -30,7 +31,7 @@ def start_browser():
      tmp = os.path.abspath(sys.argv[0])
      tmp = os.path.dirname(tmp)
      tmp = os.path.join(tmp, "../browser", "browser.exe")
-     os.system("start /b {0} --user-data-dir=UserData -enable-easy-off-store-extension-install".format(tmp))
+     os.system('start /b {0} --user-data-dir=UserData -enable-easy-off-store-extension-install'.format(tmp))
      
 def hide_console():
     #time.sleep(30)
@@ -47,7 +48,7 @@ def hide_console():
         pass
      
 def start_one_instance_httpserver():
-    lockFile = os.path.join(os.path.expanduser('~'), "My Documents/WebLocker", "myhttpserver.lock")
+    lockFile = os.path.join(os.path.expanduser('~'), "WebLocker", "myhttpserver.lock")
     fd = open(lockFile, "w")
     lock(fd, LOCK_EX | LOCK_NB) 
    
@@ -56,6 +57,7 @@ def start_one_instance_httpserver():
 
 if __name__ == '__main__':
     try:
+        multiprocessing .freeze_support()
         win32api.SetConsoleTitle("WebLockerServer") 
         start_browser();
         threads = []
