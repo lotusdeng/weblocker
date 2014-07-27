@@ -109,7 +109,8 @@ class Report():
         data["case_location"] = self.caseLocation
         
         total_size = 0
-        for dirpath, dirnames, filenames in os.walk(os.path.join(self.caseLocation, self.caseName)):
+        caseMyDir = os.path.join(self.caseLocation, self.caseName)
+        for dirpath, dirnames, filenames in os.walk(caseMyDir.decode("UTF-8")):
             for f in filenames:
                 fp = os.path.join(dirpath, f)
                 total_size += os.path.getsize(fp)
