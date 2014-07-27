@@ -59,11 +59,11 @@ function checkForValidUrl(tabId, changeInfo, tab) {
 					var arr2 = parseURL(tab.url);
 					   
 				   if(arr1.host.indexOf("www.") == 0) {
-					arr1.host = arr1.host.substring(5)
+					arr1.host = arr1.host.substring(4)
 				   } 
 				   
 				   if(arr2.host.indexOf("www.") == 0) {
-					arr2.host = arr2.host.substring(5);
+					arr2.host = arr2.host.substring(4);
 				   } 
 				   //alert("domain1:" + arr1.host);
 				   //alert("domain2:" + arr2.host);
