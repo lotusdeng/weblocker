@@ -174,22 +174,28 @@ function willCaptureThisUrl(url, callback) {
                        for(var i = 0; i < destUrls.length; i++) {
                            
                            destUrl = destUrls[i];
+						   //alert("destUrl:" + destUrl);
+						   if(destUrl.indexOf("http://") == -1 && destUrl.indexOf("https://") == -1){
+								destUrl = "http://" + destUrl
+						   }
+						   
                            //alert("destUrl:" + destUrl);
                            //alert("currentUrl:" + url);
                            var arr1 = parseURL(destUrl);
                            var arr2 = parseURL(url);
                            
-                           if(arr1.host.indexOf("www.") == -1) {
-                            arr1.host = "www." + arr1.host;
+                           if(arr1.host.indexOf("www.") == 0) {
+                            arr1.host = arr1.host.substring(5)
                            } 
                            
-                           if(arr2.host.indexOf("www.") == -1) {
-                            arr2.host = "www." + arr2.host;
+                           if(arr2.host.indexOf("www.") == 0) {
+                            arr2.host = arr2.host.substring(5);
                            } 
                            //alert("domain1:" + arr1.host);
                            //alert("domain2:" + arr2.host);
                            
-                           if(arr1.host == arr2.host) {
+                           if(arr2.host.indexOf(arr1.host) != -1) {
+							
                                match = true;
                                break;
                            } else {

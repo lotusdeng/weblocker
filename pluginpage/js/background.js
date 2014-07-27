@@ -9,6 +9,33 @@
 		host = match[1];
 	return host;
 }
+function parseURL(url) {
+    var a =  document.createElement('a');
+    a.href = url;
+    return {
+        source: url,
+        protocol: a.protocol.replace(':',''),
+        host: a.hostname,
+        port: a.port,
+        query: a.search,
+        params: (function(){
+            var ret = {},
+                seg = a.search.replace(/^\?/,'').split('&'),
+                len = seg.length, i = 0, s;
+            for (;i<len;i++) {
+                if (!seg[i]) { continue; }
+                s = seg[i].split('=');
+                ret[s[0]] = s[1];
+            }
+            return ret;
+        })(),
+        file: (a.pathname.match(/\/([^\/?#]+)$/i) || [,''])[1],
+        hash: a.hash.replace('#',''),
+        path: a.pathname.replace(/^([^\/])/,'/$1'),
+        relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [,''])[1],
+        segments: a.pathname.replace(/^\//,'').split('/')
+    };
+}
 
 function checkForValidUrl(tabId, changeInfo, tab) {
     //alert("hidepage");
@@ -21,23 +48,33 @@ function checkForValidUrl(tabId, changeInfo, tab) {
             if(result.caseUrl.length != 0) {
                 //alert(result.caseUrl);
                 urls = result.caseUrl.split(" ");
-                currentHost = getDomainFromUrl(tab.url).toLowerCase();
+                
                 for(i = 0; i < urls.length; i++) {
-                    host =   getDomainFromUrl(urls[i]).toLowerCase();
-                    //alert(currentHost);
-                    //alert(host);
-                    if(host.indexOf("www.") == -1) {
-                    host = "www." + host;
-                   } 
-                   
-                   if(currentHost.indexOf("www.") == -1) {
-                    currentHost = "www." + currentHost;
-                   } 
-                    if(host == currentHost) {
-                        //alert("showpage");
-                        chrome.pageAction.show(tabId);  
-                        return;
-                    }      
+					destUrl = urls[i];
+					//alert(destUrl);
+					if(destUrl.indexOf("http://") == -1 && destUrl.indexOf("https://") == -1){
+						destUrl = "http://" + destUrl
+					}
+					var arr1 = parseURL(destUrl);
+					var arr2 = parseURL(tab.url);
+					   
+				   if(arr1.host.indexOf("www.") == 0) {
+					arr1.host = arr1.host.substring(5)
+				   } 
+				   
+				   if(arr2.host.indexOf("www.") == 0) {
+					arr2.host = arr2.host.substring(5);
+				   } 
+				   //alert("domain1:" + arr1.host);
+				   //alert("domain2:" + arr2.host);
+				   
+				   if(arr2.host.indexOf(arr1.host) != -1) {
+					   chrome.pageAction.show(tabId);  
+					   break;
+				   } else {
+					   
+				   }
+						   
                 }    
             }});
         }

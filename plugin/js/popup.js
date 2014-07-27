@@ -114,18 +114,26 @@ function pluginStateButtonOnClick(e) {
             }
 
         } else {
-            if(document.getElementById("caseUrlText").value.length == 0) {
-            	alert("case url not setted");
+			if(trim(document.getElementById("caseNameText").value).length == 0) {
+            	alert("案件名不能为空");
+            	return;
+            }
+			if(trim(document.getElementById("caseInvestigatorText").value).length == 0) {
+            	alert("调查者不能空");
+            	return;
+            }
+            if(trim(document.getElementById("caseUrlText").value).length == 0) {
+            	alert("URL不能为空");
             	return;
             }
             
-            caseUrl = document.getElementById("caseUrlText").value;
+            caseUrl = trim(document.getElementById("caseUrlText").value);
             var bgp = chrome.extension.getBackgroundPage();
             bgp.sendMessageToOtherPlugin("enable", caseUrl);
             
-            var caseInfo = { 'caseName': document.getElementById("caseNameText").value,
-                'caseInvestigator': document.getElementById("caseInvestigatorText").value,
-                'caseUrl': document.getElementById("caseUrlText").value};
+            var caseInfo = { 'caseName': trim(document.getElementById("caseNameText").value),
+                'caseInvestigator': trim(document.getElementById("caseInvestigatorText").value),
+                'caseUrl': trim(document.getElementById("caseUrlText").value)};
             
             var bgp = chrome.extension.getBackgroundPage();
             bgp.sendCaseInfoToBackServer(caseInfo);
@@ -134,7 +142,7 @@ function pluginStateButtonOnClick(e) {
             pluginStateButton.style.backgroundImage = "url('../images/end.png')"; 
             chrome.browserAction.setBadgeText({text: "ON"}); 
             
-            chrome.storage.local.set({"caseUrl": document.getElementById("caseUrlText").value}, function(){});  
+            chrome.storage.local.set({"caseUrl": trim(document.getElementById("caseUrlText").value)}, function(){});  
 			
 			//send start case info to backserver
 			$.ajax({

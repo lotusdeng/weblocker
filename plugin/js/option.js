@@ -1,4 +1,5 @@
 
+
 function initSaveButton() {
 	var pluginStateButton = document.getElementById("saveButton");
     pluginStateButton.addEventListener("click", saveButtonOnClick, true);
@@ -156,12 +157,31 @@ function init() {
 }
 
 function saveButtonOnClick(e) {
+    caseName = trim(document.getElementById("caseNameText").value)
+	if(caseName.length == 0) {
+		alert("案件名不能为空");
+		return;
+	}
+	
+	caseInvestigator = trim(document.getElementById("caseInvestigatorText").value)
+	if(caseInvestigator.length == 0) {
+		alert("调查者不能为空");
+		return;
+	}
+	caseUrl = trim(document.getElementById("caseUrlText").value)
+	if(caseUrl.length == 0) {
+		alert("URL不能为空");
+		return;
+	}
+	caseLocation = trim(document.getElementById("caseLocationText").value)
+	if(caseLocation.length == 0) {
+		alert("案卷目录不能为空");
+		return;
+	}
+    chrome.storage.local.set({"caseName": caseName}, function(){});
+    chrome.storage.local.set({"caseInvestigator": caseInvestigator}, function(){});
+    chrome.storage.local.set({"caseUrl": caseUrl}, function(){});
     
-    chrome.storage.local.set({"caseName": document.getElementById("caseNameText").value}, function(){});
-    chrome.storage.local.set({"caseInvestigator": document.getElementById("caseInvestigatorText").value}, function(){});
-    chrome.storage.local.set({"caseUrl": document.getElementById("caseUrlText").value}, function(){});
-    
-    caseUrl = document.getElementById("caseUrlText").value;
     chrome.storage.local.get("pluginState", function(result) {
         //alert("pluginState=" + result.pluginState);
         if(result.pluginState == "enable")  {
@@ -174,7 +194,7 @@ function saveButtonOnClick(e) {
      });
     
         
-    chrome.storage.local.set({"caseLocation": document.getElementById("caseLocationText").value}, function(){});
+    chrome.storage.local.set({"caseLocation": caseLocation}, function(){});
     
     if(document.getElementById("md5Checkbox").checked) {
         chrome.storage.local.set({"md5":"enable"}, function(){});
@@ -201,10 +221,10 @@ function saveButtonOnClick(e) {
     }
     
     
-    var caseInfo = { 'caseName': document.getElementById("caseNameText").value,
-        'caseInvestigator': document.getElementById("caseInvestigatorText").value,
-        'caseUrl': document.getElementById("caseUrlText").value,
-        'caseLocation': document.getElementById("caseLocationText").value};
+    var caseInfo = { 'caseName': caseName,
+        'caseInvestigator': caseInvestigator,
+        'caseUrl': caseUrl,
+        'caseLocation': caseLocation};
     if(document.getElementById("md5Checkbox").checked) {
         caseInfo["md5"] = true;
     } else {

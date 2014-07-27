@@ -2,7 +2,7 @@
     "name": "WebLocker",
     "manifest_version": 2,
     "version": "1.0",
-    "background": {"scripts":["js/jquery.min.js", "js/background.js", "js/screen.js", "js/scroll.js"] },
+    "background": {"scripts":["js/jquery.min.js", "js/background.js", "js/screen.js", "js/scroll.js", "js/util.js"] },
 
     "description": "",
     "browser_action": {
