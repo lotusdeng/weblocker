@@ -58,7 +58,7 @@ function scrollPageToButtom(callback) {
 
 			//alert(originalX + ":" + originalY);
 		
-			alert(fullWidth + ":" + fullHeight);
+			//alert(fullWidth + ":" + fullHeight);
 
 			if(originalY >= fullHeight) {
 				//alert("stop scroll");
